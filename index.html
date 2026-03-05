@@ -278,6 +278,56 @@ body{
   border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.83rem;cursor:pointer;white-space:nowrap;}
 .install-close{background:transparent;border:none;color:rgba(255,255,255,.7);font-size:1.2rem;cursor:pointer;padding:4px;}
 
+
+/* ── SAÚDE ── */
+.saude-field-group{margin-bottom:14px;}
+.saude-label{font-size:.72rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;
+  letter-spacing:.07em;display:block;margin-bottom:5px;}
+.saude-input{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:"DM Sans",sans-serif;font-size:.92rem;color:var(--text);background:var(--surface2);}
+.saude-input:focus{outline:none;border-color:var(--green-light);}
+.saude-input-num{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:"DM Sans",sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);
+  background:var(--surface);text-align:center;-webkit-appearance:none;}
+.saude-input-num:focus{outline:none;border-color:var(--green-light);background:#F0FAF4;}
+.saude-section-title{font-family:"DM Serif Display",serif;font-size:1.05rem;color:var(--green);
+  margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+.saude-section-title::after{content:"";flex:1;height:1.5px;background:var(--border);}
+.saude-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:12px;}
+.saude-card-title{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:10px;}
+.saude-alerta{background:#FEE2E2;border:1.5px solid #FCA5A5;border-radius:8px;
+  padding:8px 12px;font-size:.8rem;color:#9B2335;font-weight:600;margin-top:8px;}
+.saude-alerta.ok{background:var(--green-pale);border-color:var(--mint);color:var(--green);}
+.saude-tag-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--surface);font-family:"DM Sans",sans-serif;font-size:.8rem;
+  font-weight:600;color:var(--text-soft);cursor:pointer;}
+.saude-tag-btn.active{background:var(--green);color:#fff;border-color:var(--green);}
+.saude-imc-display{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:1.1rem;font-weight:700;text-align:center;background:var(--surface2);color:var(--text-mid);}
+.atend-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:10px;box-shadow:var(--shadow);}
+.atend-card.tem-alerta{border-color:#FCA5A5;background:#FFF8F8;}
+.atend-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.atend-nome{font-weight:700;font-size:.95rem;color:var(--text);}
+.atend-setor{font-size:.72rem;color:var(--text-soft);margin-top:1px;}
+.atend-hora{font-size:.72rem;color:var(--text-soft);}
+.atend-medidas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.medida-tag{padding:4px 10px;border-radius:20px;font-size:.74rem;font-weight:700;
+  background:var(--green-pale);color:var(--green);}
+.medida-tag.alerta{background:#FEE2E2;color:#9B2335;}
+.atend-obs{font-size:.78rem;color:var(--text-mid);font-style:italic;margin-top:4px;}
+.atend-del{background:transparent;border:none;color:var(--text-soft);cursor:pointer;
+  font-size:1rem;padding:4px;}
+.mes-comparativo{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:12px;box-shadow:var(--shadow);}
+.mes-comp-title{font-family:"DM Serif Display",serif;font-size:1rem;color:var(--green);margin-bottom:10px;}
+.mes-comp-row{display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid var(--border);font-size:.83rem;}
+.mes-comp-row:last-child{border-bottom:none;}
+.empty-state{text-align:center;padding:30px 20px;color:var(--text-soft);font-size:.88rem;}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:8px;}
+
 /* ── TABLET ── */
 @media(min-width:600px){
   .stats-row{grid-template-columns:repeat(4,1fr);}
@@ -354,6 +404,32 @@ body{
     <div class="report-weeks" id="reportWeeks"></div>
     <div class="sec-title">Por Setor</div>
     <div id="sectorReport"></div>
+  </div>
+
+  <!-- SAÚDE -->
+  <div id="view-saude" class="view">
+    <div class="stats-row" style="margin-bottom:14px;">
+      <div class="stat-card green-card">
+        <div class="lbl">Atend. Hoje</div>
+        <div class="val" id="sSaudeHoje">0</div>
+        <div class="sub">registros</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Este Mês</div>
+        <div class="val" id="sSaudeMes">0</div>
+        <div class="sub">atendimentos</div>
+      </div>
+      <div class="stat-card" id="sAlertaCard">
+        <div class="lbl">Alertas</div>
+        <div class="val" id="sSaudeAlertas" style="color:#9B2335">0</div>
+        <div class="sub">fora do normal</div>
+      </div>
+    </div>
+    <button class="big-btn green" style="margin-bottom:18px;" onclick="openSaudeModal()">➕ Novo Atendimento</button>
+    <div class="sec-title">Atendimentos de Hoje</div>
+    <div id="saudeHojeList"></div>
+    <div class="sec-title" style="margin-top:18px;">Histórico do Mês</div>
+    <div id="saudeRelatorio"></div>
   </div>
 
   <!-- CONFIG -->
@@ -437,6 +513,11 @@ body{
     <div class="bnav-indicator"></div>
     <span class="bnav-icon">📊</span>
     <span class="bnav-label">Relatório</span>
+  </button>
+  <button class="bnav-btn" id="nav-saude" onclick="showView('saude')">
+    <div class="bnav-indicator"></div>
+    <span class="bnav-icon">🩺</span>
+    <span class="bnav-label">Saúde</span>
   </button>
   <button class="bnav-btn" id="nav-config" onclick="showView('config')">
     <div class="bnav-indicator"></div>
@@ -662,6 +743,7 @@ function showView(v){
   document.getElementById(`nav-${v}`).classList.add('active');
   if(v==='relatorio')renderReport();
   if(v==='config')renderConfig();
+  if(v==='saude')renderSaudeView();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -886,6 +968,311 @@ function toggleSetupGuide(){
   g.style.display=g.style.display==='none'?'block':'none';
 }
 
+
+// ── SAÚDE ──
+const SK_SAUDE = 'gl_saude_v1';
+let SAUDE = {};
+
+function loadSaude(){
+  try{const p=localStorage.getItem(SK_SAUDE);if(p)SAUDE=JSON.parse(p);}catch(e){}
+}
+function saveSaude_data(){
+  try{localStorage.setItem(SK_SAUDE,JSON.stringify(SAUDE));}catch(e){}
+}
+
+function todayKey(){return dk(new Date());}
+
+function saudeStats(){
+  const hoje = todayKey();
+  const mes = hoje.slice(0,7);
+  const todayRecs = (SAUDE[hoje]||[]);
+  let mesCount = 0, alertas = 0;
+  Object.keys(SAUDE).forEach(d=>{
+    if(d.startsWith(mes)){
+      (SAUDE[d]||[]).forEach(r=>{
+        mesCount++;
+        if(r.alertas && r.alertas.length>0) alertas++;
+      });
+    }
+  });
+  return {hoje: todayRecs.length, mes: mesCount, alertas};
+}
+
+function renderSaudeStats(){
+  const s = saudeStats();
+  document.getElementById('sSaudeHoje').textContent = s.hoje;
+  document.getElementById('sSaudeMes').textContent = s.mes;
+  document.getElementById('sSaudeAlertas').textContent = s.alertas;
+  const ac = document.getElementById('sAlertaCard');
+  if(ac) ac.style.borderColor = s.alertas>0 ? '#FCA5A5' : 'var(--border)';
+}
+
+function renderSaudeHoje(){
+  const hoje = todayKey();
+  const recs = (SAUDE[hoje]||[]).slice().reverse();
+  const cont = document.getElementById('saudeHojeList');
+  if(!recs.length){
+    cont.innerHTML = '<div class="empty-state"><div class="empty-icon">🩺</div>Nenhum atendimento registrado hoje.<br>Toque em "Novo Atendimento" para começar.</div>';
+    return;
+  }
+  cont.innerHTML = recs.map((r,i)=>{
+    const idx = (SAUDE[hoje]||[]).length - 1 - i;
+    const temAlerta = r.alertas && r.alertas.length > 0;
+    const medidas = buildMedidasTags(r);
+    return `<div class="atend-card${temAlerta?' tem-alerta':''}">
+      <div class="atend-header">
+        <div>
+          <div class="atend-nome">${r.nome||'—'}</div>
+          <div class="atend-setor">${r.setor||''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="atend-hora">${r.hora||''}</span>
+          <button class="atend-del" onclick="deleteSaude('${hoje}',${idx})">🗑️</button>
+        </div>
+      </div>
+      <div class="atend-medidas">${medidas}</div>
+      ${r.alertas&&r.alertas.length?`<div class="saude-alerta">⚠️ ${r.alertas.join(' · ')}</div>`:''}
+      ${r.obs?`<div class="atend-obs">"${r.obs}"</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function buildMedidasTags(r){
+  let tags = '';
+  if(r.pressaoS && r.pressaoD){
+    const alerta = isPressaoAlerta(r.pressaoS, r.pressaoD);
+    tags += `<span class="medida-tag${alerta?' alerta':''}">🩸 ${r.pressaoS}/${r.pressaoD}</span>`;
+  }
+  if(r.oxi){
+    const alerta = r.oxi < 95;
+    tags += `<span class="medida-tag${alerta?' alerta':''}">💨 ${r.oxi}%</span>`;
+  }
+  if(r.glico){
+    const alerta = isGlicoAlerta(r.glico, r.glicoEstado);
+    tags += `<span class="medida-tag${alerta?' alerta':''}">🩸 ${r.glico} mg/dL</span>`;
+  }
+  if(r.bioPeso){
+    tags += `<span class="medida-tag">⚖️ ${r.bioPeso}kg`;
+    if(r.bioIMC) tags += ` · IMC ${r.bioIMC}`;
+    tags += `</span>`;
+  }
+  return tags || '<span style="color:var(--text-soft);font-size:.8rem;">Sem medições</span>';
+}
+
+function renderSaudeRelatorio(){
+  const mes = todayKey().slice(0,7);
+  const cont = document.getElementById('saudeRelatorio');
+  
+  // Count by day
+  const diasDoMes = Object.keys(SAUDE).filter(d=>d.startsWith(mes)).sort().reverse();
+  if(!diasDoMes.length){
+    cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div>Nenhum dado registrado este mês.</div>';
+    return;
+  }
+
+  // Monthly summary
+  let totalMes=0, totalAlertas=0, pressaoVals=[], oxiVals=[], glicoVals=[];
+  diasDoMes.forEach(d=>{
+    (SAUDE[d]||[]).forEach(r=>{
+      totalMes++;
+      if(r.alertas&&r.alertas.length) totalAlertas++;
+      if(r.pressaoS) pressaoVals.push(r.pressaoS);
+      if(r.oxi) oxiVals.push(r.oxi);
+      if(r.glico) glicoVals.push(r.glico);
+    });
+  });
+
+  const avg = arr => arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : '—';
+
+  let html = `<div class="mes-comparativo">
+    <div class="mes-comp-title">📊 Resumo de ${MONTHS[parseInt(mes.slice(5))-1]}</div>
+    <div class="mes-comp-row"><span>Total de atendimentos</span><strong>${totalMes}</strong></div>
+    <div class="mes-comp-row"><span>Alertas registrados</span><strong style="color:${totalAlertas>0?'#9B2335':'var(--green)'}">${totalAlertas}</strong></div>
+    ${pressaoVals.length?`<div class="mes-comp-row"><span>Pressão média (sistólica)</span><strong>${avg(pressaoVals)} mmHg</strong></div>`:''}
+    ${oxiVals.length?`<div class="mes-comp-row"><span>Oximetria média</span><strong>${avg(oxiVals)}%</strong></div>`:''}
+    ${glicoVals.length?`<div class="mes-comp-row"><span>Glicemia média</span><strong>${avg(glicoVals)} mg/dL</strong></div>`:''}
+  </div>`;
+
+  // Per day
+  diasDoMes.forEach(d=>{
+    const recs = SAUDE[d]||[];
+    const alertasDia = recs.filter(r=>r.alertas&&r.alertas.length).length;
+    const dt = new Date(d+'T12:00:00');
+    html += `<div class="atend-card" style="margin-bottom:8px;">
+      <div class="atend-header">
+        <div><div class="atend-nome">${WD[dt.getDay()]}, ${dt.getDate()} de ${MONTHS[dt.getMonth()]}</div></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="medida-tag">${recs.length} atend.</span>
+          ${alertasDia>0?`<span class="medida-tag alerta">⚠️ ${alertasDia}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  cont.innerHTML = html;
+}
+
+function renderSaudeView(){
+  renderSaudeStats();
+  renderSaudeHoje();
+  renderSaudeRelatorio();
+}
+
+// ── MODAL SAÚDE ──
+let editingSaudeIdx = null;
+
+function openSaudeModal(){
+  editingSaudeIdx = null;
+  document.getElementById('sMTitle').textContent = 'Novo Atendimento';
+  document.getElementById('sMSub').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  // Clear fields
+  ['sNome','sOxi','sGlico','sBioPeso','sBioAltura','sBioGordura','sObs','sPressaoS','sPressaoD'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('sSetor').value='';
+  document.getElementById('sGlicoEstado').value='jejum';
+  document.getElementById('sBioIMC').textContent='—';
+  document.querySelectorAll('.saude-tag-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  ['alertaPressao','alertaOxi','alertaGlico','alertaBio'].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.style.display='none';}
+  });
+  document.getElementById('overlaySaude').classList.add('open');
+  document.body.style.overflow='hidden';
+
+  // Live IMC calc
+  ['sBioPeso','sBioAltura'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', calcIMC);
+  });
+  // Live alerts
+  ['sPressaoS','sPressaoD'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', checkPressaoLive);
+  });
+  document.getElementById('sOxi').addEventListener('input', checkOxiLive);
+  document.getElementById('sGlico').addEventListener('input', checkGlicoLive);
+}
+
+function closeSaudeModal(){
+  document.getElementById('overlaySaude').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function setGlicoEstado(estado, btn){
+  document.getElementById('sGlicoEstado').value = estado;
+  document.querySelectorAll('.saude-tag-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkGlicoLive();
+}
+
+function calcIMC(){
+  const p = parseFloat(document.getElementById('sBioPeso').value);
+  const h = parseFloat(document.getElementById('sBioAltura').value);
+  if(p && h && h > 0){
+    const hm = h/100;
+    const imc = (p/(hm*hm)).toFixed(1);
+    const el = document.getElementById('sBioIMC');
+    el.textContent = imc;
+    let label='', color='var(--green)';
+    if(imc<18.5){label='Abaixo';color='#1D4E89';}
+    else if(imc<25){label='Normal';color='var(--green)';}
+    else if(imc<30){label='Sobrepeso';color='#D97706';}
+    else{label='Obesidade';color='#9B2335';}
+    el.style.color = color;
+    el.textContent = `${imc} (${label})`;
+    const al = document.getElementById('alertaBio');
+    if(imc>=30){al.style.display='block';al.textContent=`⚠️ IMC ${imc} — Obesidade. Orientar acompanhamento médico.`;al.className='saude-alerta';}
+    else if(imc>=25){al.style.display='block';al.textContent=`⚠️ IMC ${imc} — Sobrepeso.`;al.className='saude-alerta';}
+    else{al.style.display='none';}
+  } else {
+    document.getElementById('sBioIMC').textContent='—';
+  }
+}
+
+function isPressaoAlerta(s,d){return s>=140||s<90||d>=90||d<60;}
+function isGlicoAlerta(g,estado){
+  if(estado==='jejum') return g>99||g<70;
+  return g>139||g<70;
+}
+
+function checkPressaoLive(){
+  const s=parseInt(document.getElementById('sPressaoS').value);
+  const d=parseInt(document.getElementById('sPressaoD').value);
+  const al=document.getElementById('alertaPressao');
+  if(!s||!d){al.style.display='none';return;}
+  if(s>=180||d>=120){al.style.display='block';al.className='saude-alerta';al.textContent='🚨 Crise hipertensiva! Encaminhar emergência imediatamente.';}
+  else if(s>=140||d>=90){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Pressão alta. Orientar avaliação médica.';}
+  else if(s<90||d<60){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Pressão baixa. Monitorar sintomas.';}
+  else{al.style.display='block';al.className='saude-alerta ok';al.textContent='✓ Pressão normal.';}
+}
+
+function checkOxiLive(){
+  const v=parseInt(document.getElementById('sOxi').value);
+  const al=document.getElementById('alertaOxi');
+  if(!v){al.style.display='none';return;}
+  if(v<90){al.style.display='block';al.className='saude-alerta';al.textContent='🚨 SpO2 crítica! Encaminhar emergência.';}
+  else if(v<95){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Saturação baixa. Orientar avaliação médica.';}
+  else{al.style.display='block';al.className='saude-alerta ok';al.textContent='✓ Oximetria normal.';}
+}
+
+function checkGlicoLive(){
+  const v=parseInt(document.getElementById('sGlico').value);
+  const estado=document.getElementById('sGlicoEstado').value;
+  const al=document.getElementById('alertaGlico');
+  if(!v){al.style.display='none';return;}
+  if(v<70){al.style.display='block';al.className='saude-alerta';al.textContent='🚨 Hipoglicemia! Agir imediatamente — oferecer açúcar.';}
+  else if(estado==='jejum'&&v>125){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Glicemia em jejum elevada. Orientar avaliação médica.';}
+  else if(estado==='pos'&&v>200){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Glicemia pós-refeição elevada. Orientar avaliação médica.';}
+  else{al.style.display='block';al.className='saude-alerta ok';al.textContent='✓ Glicemia normal.';}
+}
+
+function saveSaude(){
+  const nome = document.getElementById('sNome').value.trim();
+  if(!nome){alert('⚠️ Informe o nome do servidor.');return;}
+
+  const alertas = [];
+  const pressaoS = parseInt(document.getElementById('sPressaoS').value)||null;
+  const pressaoD = parseInt(document.getElementById('sPressaoD').value)||null;
+  const oxi = parseInt(document.getElementById('sOxi').value)||null;
+  const glico = parseInt(document.getElementById('sGlico').value)||null;
+  const glicoEstado = document.getElementById('sGlicoEstado').value;
+  const bioPeso = parseFloat(document.getElementById('sBioPeso').value)||null;
+  const bioAltura = parseFloat(document.getElementById('sBioAltura').value)||null;
+  const bioGordura = parseFloat(document.getElementById('sBioGordura').value)||null;
+  const bioIMCEl = document.getElementById('sBioIMC').textContent;
+  const bioIMC = bioIMCEl !== '—' ? bioIMCEl.split(' ')[0] : null;
+  const obs = document.getElementById('sObs').value.trim();
+
+  if(pressaoS && pressaoD && isPressaoAlerta(pressaoS, pressaoD))
+    alertas.push(`Pressão ${pressaoS}/${pressaoD}`);
+  if(oxi && oxi < 95) alertas.push(`SpO2 ${oxi}%`);
+  if(glico && isGlicoAlerta(glico, glicoEstado)) alertas.push(`Glicemia ${glico} mg/dL`);
+  if(bioIMC && parseFloat(bioIMC) >= 25) alertas.push(`IMC ${bioIMC}`);
+
+  const now = new Date();
+  const hora = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const registro = {
+    nome, setor: document.getElementById('sSetor').value,
+    pressaoS, pressaoD, oxi, glico, glicoEstado,
+    bioPeso, bioAltura, bioGordura, bioIMC, obs,
+    alertas, hora
+  };
+
+  const hoje = todayKey();
+  if(!SAUDE[hoje]) SAUDE[hoje] = [];
+  SAUDE[hoje].push(registro);
+  saveSaude_data();
+  closeSaudeModal();
+  renderSaudeView();
+}
+
+function deleteSaude(dia, idx){
+  if(!confirm('Remover este atendimento?')) return;
+  SAUDE[dia].splice(idx, 1);
+  if(!SAUDE[dia].length) delete SAUDE[dia];
+  saveSaude_data();
+  renderSaudeView();
+}
+
+
 // ── PWA: SERVICE WORKER ──
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
@@ -911,9 +1298,126 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 
 // ── INIT ──
 load();
+loadSaude();
 renderCalendar();
 driveHandleCallback();
 driveInit();
 </script>
+
+<!-- MODAL SAÚDE -->
+<div class="overlay" id="overlaySaude" onclick="if(event.target.id==='overlaySaude')closeSaudeModal()">
+  <div class="modal" id="modalSaude">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <div>
+        <div class="mtitle" id="sMTitle">Novo Atendimento</div>
+        <div class="msub" id="sMSub"></div>
+      </div>
+      <button class="close-btn" onclick="closeSaudeModal()">✕</button>
+    </div>
+    <div class="modal-scroll" style="padding:16px 18px;">
+
+      <!-- Nome e Setor -->
+      <div class="saude-field-group">
+        <label class="saude-label">Nome do Servidor</label>
+        <input id="sNome" type="text" class="saude-input" placeholder="Nome completo"/>
+      </div>
+      <div class="saude-field-group">
+        <label class="saude-label">Setor</label>
+        <select id="sSetor" class="saude-input">
+          <option value="">Selecione o setor...</option>
+          <option>GABINETES</option>
+          <option>GABINETE DA CONSELHEIRA SUBSTITUTA E MEMORIAL</option>
+          <option>MINISTÉRIO PÚBLICO</option>
+          <option>SEAF — SEC. DE ADM. E FINANÇAS</option>
+          <option>ESCON — ESCOLA DE CONTAS</option>
+          <option>SESSÕES</option>
+          <option>COORDAD</option>
+          <option>PRESIDÊNCIA</option>
+          <option>SECEX — SEC. DE CONTROLE EXTERNO</option>
+          <option>STI — SEC. DE TEC. DA INFORMAÇÃO</option>
+        </select>
+      </div>
+
+      <!-- Serviços -->
+      <div class="saude-section-title">Medições Realizadas</div>
+      <div class="info-box" style="margin-bottom:12px;">Preencha apenas os serviços realizados. Deixe em branco os que não foram feitos.</div>
+
+      <!-- Pressão -->
+      <div class="saude-card" id="cardPressao">
+        <div class="saude-card-title">🩸 Pressão Arterial</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div style="flex:1;">
+            <label class="saude-label">Sistólica (mmHg)</label>
+            <input id="sPressaoS" type="number" inputmode="numeric" class="saude-input-num" placeholder="120" min="60" max="250"/>
+          </div>
+          <div style="font-size:1.4rem;color:var(--text-soft);padding-top:18px;">/</div>
+          <div style="flex:1;">
+            <label class="saude-label">Diastólica (mmHg)</label>
+            <input id="sPressaoD" type="number" inputmode="numeric" class="saude-input-num" placeholder="80" min="40" max="150"/>
+          </div>
+        </div>
+        <div id="alertaPressao" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Oximetria -->
+      <div class="saude-card" id="cardOxi">
+        <div class="saude-card-title">💨 Oximetria (SpO2)</div>
+        <label class="saude-label">Saturação (%)</label>
+        <input id="sOxi" type="number" inputmode="numeric" class="saude-input-num" placeholder="98" min="50" max="100"/>
+        <div id="alertaOxi" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Glicemia -->
+      <div class="saude-card" id="cardGlico">
+        <div class="saude-card-title">🩸 Glicosímetro</div>
+        <label class="saude-label">Glicemia (mg/dL)</label>
+        <input id="sGlico" type="number" inputmode="numeric" class="saude-input-num" placeholder="90" min="20" max="600"/>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="saude-tag-btn active" onclick="setGlicoEstado('jejum',this)">Jejum</button>
+          <button class="saude-tag-btn" onclick="setGlicoEstado('pos',this)">Pós-refeição</button>
+        </div>
+        <input type="hidden" id="sGlicoEstado" value="jejum"/>
+        <div id="alertaGlico" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Bioimpedância -->
+      <div class="saude-card" id="cardBio">
+        <div class="saude-card-title">⚖️ Bioimpedância</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label class="saude-label">Peso (kg)</label>
+            <input id="sBioPeso" type="number" inputmode="decimal" class="saude-input-num" placeholder="70.0" step="0.1"/>
+          </div>
+          <div>
+            <label class="saude-label">Altura (cm)</label>
+            <input id="sBioAltura" type="number" inputmode="numeric" class="saude-input-num" placeholder="170"/>
+          </div>
+          <div>
+            <label class="saude-label">Gordura (%)</label>
+            <input id="sBioGordura" type="number" inputmode="decimal" class="saude-input-num" placeholder="20.0" step="0.1"/>
+          </div>
+          <div>
+            <label class="saude-label">IMC (auto)</label>
+            <div id="sBioIMC" class="saude-imc-display">—</div>
+          </div>
+        </div>
+        <div id="alertaBio" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Observações -->
+      <div class="saude-field-group">
+        <label class="saude-label">Observações</label>
+        <textarea id="sObs" class="saude-input" rows="2" placeholder="Observações adicionais..."></textarea>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeSaudeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveSaude()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
