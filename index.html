@@ -787,54 +787,62 @@ async function driveBackupNow(silent=false){
   const btn=document.getElementById('driveConnected')?.querySelector('.big-btn.green');
   if(btn){btn.textContent='⏳ Salvando...';btn.disabled=true;}
   try{
-    // Build backup JSON
-    const backup={
-      version:'gl_tce_v5',
-      exportedAt:new Date().toISOString(),
-      aulas:S.aulas,
-      data:S.data
-    };
-    const filename=`GL_Laboral_backup_${new Date().toISOString().slice(0,10)}.json`;
+    const backup={version:'gl_tce_v5',exportedAt:new Date().toISOString(),aulas:S.aulas,data:S.data};
     const content=JSON.stringify(backup,null,2);
-    const blob=new Blob([content],{type:'application/json'});
 
-    // Check if file already exists
-    const search=await fetch(
-      `https://www.googleapis.com/drive/v3/files?q=name='GL_Laboral_dados.json'&spaces=drive`,
-      {headers:{Authorization:`Bearer ${driveToken}`}}
-    );
-    const searchData=await search.json();
-    const existing=searchData.files&&searchData.files[0];
+    // Try to use stored file ID first
+    let fileId=localStorage.getItem('gl_drive_file_id');
+
+    // If no stored ID, search for existing file
+    if(!fileId){
+      const search=await fetch(
+        `https://www.googleapis.com/drive/v3/files?q=name%3D'GL_Laboral_dados.json'&spaces=drive&fields=files(id,name)`,
+        {headers:{Authorization:`Bearer ${driveToken}`}}
+      );
+      const searchData=await search.json();
+      if(searchData.files&&searchData.files.length>0){
+        fileId=searchData.files[0].id;
+        localStorage.setItem('gl_drive_file_id',fileId);
+      }
+    }
 
     let response;
-    if(existing){
+    if(fileId){
       // Update existing file
       response=await fetch(
-        `https://www.googleapis.com/upload/drive/v3/files/${existing.id}?uploadType=media`,
+        `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,
         {method:'PATCH',headers:{Authorization:`Bearer ${driveToken}`,'Content-Type':'application/json'},body:content}
       );
-    } else {
-      // Create new file with metadata
+      if(!response.ok) fileId=null; // If update fails, create new
+    }
+
+    if(!fileId){
+      // Create new file
       const meta=JSON.stringify({name:'GL_Laboral_dados.json',mimeType:'application/json'});
       const formData=new FormData();
       formData.append('metadata',new Blob([meta],{type:'application/json'}));
-      formData.append('file',blob);
+      formData.append('file',new Blob([content],{type:'application/json'}));
       response=await fetch(
-        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
         {method:'POST',headers:{Authorization:`Bearer ${driveToken}`},body:formData}
       );
+      if(response.ok){
+        const newFile=await response.json();
+        localStorage.setItem('gl_drive_file_id',newFile.id);
+      }
     }
 
     if(response.ok){
       const today=dk(new Date());
       localStorage.setItem('gl_last_backup',today);
-      document.getElementById('lastBackupInfo').textContent=`Último backup: ${today}`;
-      if(!silent) alert('✅ Backup salvo no Google Drive!\nArquivo: GL_Laboral_dados.json');
+      if(document.getElementById('lastBackupInfo'))
+        document.getElementById('lastBackupInfo').textContent=`Último backup: ${today}`;
+      if(!silent) alert('✅ Backup salvo no Google Drive!');
     } else {
       throw new Error('Falha no upload');
     }
-  } catch(e){
-    if(!silent) alert('❌ Erro ao salvar backup.\nVerifique sua conexão e tente novamente.');
+  }catch(e){
+    if(!silent) alert('❌ Erro ao salvar backup. Verifique sua conexão.');
     console.error('Drive backup error:',e);
   }
   if(btn){btn.textContent='☁️ Fazer Backup Agora';btn.disabled=false;}
@@ -843,13 +851,20 @@ async function driveBackupNow(silent=false){
 async function driveRestore(){
   if(!driveToken){alert('Conecte o Google Drive primeiro.');return;}
   try{
-    const search=await fetch(
-      `https://www.googleapis.com/drive/v3/files?q=name='GL_Laboral_dados.json'&spaces=drive`,
-      {headers:{Authorization:`Bearer ${driveToken}`}}
-    );
-    const searchData=await search.json();
-    if(!searchData.files||!searchData.files[0]){alert('Nenhum backup encontrado no Drive.');return;}
-    const fileId=searchData.files[0].id;
+    let fileId=localStorage.getItem('gl_drive_file_id');
+    if(!fileId){
+      const search=await fetch(
+        `https://www.googleapis.com/drive/v3/files?q=name%3D'GL_Laboral_dados.json'&spaces=drive&orderBy=modifiedTime%20desc&fields=files(id,name,modifiedTime)`,
+        {headers:{Authorization:`Bearer ${driveToken}`}}
+      );
+      const searchData=await search.json();
+      if(!searchData.files||searchData.files.length===0){
+        alert('Nenhum backup encontrado no Drive.');return;
+      }
+      // Use most recent file
+      fileId=searchData.files[0].id;
+      localStorage.setItem('gl_drive_file_id',fileId);
+    }
     const res=await fetch(
       `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
       {headers:{Authorization:`Bearer ${driveToken}`}}
@@ -860,7 +875,7 @@ async function driveRestore(){
     save();
     alert('✅ Dados restaurados! O app vai recarregar agora.');
     location.reload();
-  } catch(e){
+  }catch(e){
     alert('❌ Erro ao restaurar backup.');
     console.error('Drive restore error:',e);
   }
