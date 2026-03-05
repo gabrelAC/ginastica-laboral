@@ -857,8 +857,9 @@ async function driveRestore(){
     const backup=await res.json();
     if(backup.aulas) S.aulas=backup.aulas;
     if(backup.data) S.data=backup.data;
-    save();renderCalendar();
-    alert('✅ Dados restaurados do Google Drive com sucesso!');
+    save();
+    alert('✅ Dados restaurados! O app vai recarregar agora.');
+    location.reload();
   } catch(e){
     alert('❌ Erro ao restaurar backup.');
     console.error('Drive restore error:',e);
