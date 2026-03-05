@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GL Laboral">
+<meta name="theme-color" content="#2D6A4F">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Ginástica Laboral — TCE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#2D6A4F; --green-light:#40916C; --green-pale:#D8F3DC; --green-dark:#1B4332;
+  --mint:#95D5B2; --accent:#F4A261; --accent-dark:#e8893a;
+  --bg:#F4F7F5; --surface:#fff; --surface2:#EEF4F0;
+  --border:#D0E8D8; --text:#162920; --text-mid:#3D5C48; --text-soft:#7FA68A;
+  --shadow:0 2px 10px rgba(45,106,79,.09); --shadow-lg:0 8px 28px rgba(45,106,79,.16);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-h: 68px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow-x:hidden;}
+body{
+  font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
+  padding-bottom:calc(var(--nav-h) + var(--safe-bottom));
+  padding-top: var(--safe-top);
+}
+
+/* ── TOP HEADER ── */
+.top-header{
+  background:var(--green);color:#fff;
+  padding:0 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:58px;
+  box-shadow:0 2px 12px rgba(27,67,50,.3);
+  position:sticky;top:0;z-index:50;
+}
+.top-header h1{font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400;line-height:1.2;}
+.top-header h1 small{display:block;font-style:italic;opacity:.65;font-size:.75rem;}
+.month-nav-inline{display:flex;align-items:center;gap:6px;}
+.m-nav-btn{
+  width:38px;height:38px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.12);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+  transition:background .15s;flex-shrink:0;
+}
+.m-nav-btn:active{background:rgba(255,255,255,.3);}
+.month-label{
+  font-family:'DM Serif Display',serif;font-size:.95rem;
+  white-space:nowrap;color:#fff;min-width:88px;text-align:center;
+}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:var(--surface);border-top:1.5px solid var(--border);
+  display:flex;
+  padding-bottom:var(--safe-bottom);
+  box-shadow:0 -4px 20px rgba(45,106,79,.12);
+}
+.bnav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:10px 4px;cursor:pointer;border:none;background:transparent;
+  color:var(--text-soft);transition:color .2s;min-height:var(--nav-h);
+  position:relative;
+}
+.bnav-btn.active{color:var(--green);}
+.bnav-icon{font-size:1.45rem;line-height:1;}
+.bnav-label{font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+.bnav-indicator{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:32px;height:3px;border-radius:0 0 4px 4px;background:var(--green);
+  opacity:0;transition:opacity .2s;
+}
+.bnav-btn.active .bnav-indicator{opacity:1;}
+
+/* ── APP ── */
+.app{padding:16px 14px;max-width:700px;margin:0 auto;}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px;}
+.stat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);}
+.stat-card .lbl{font-size:.68rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+.stat-card .val{font-family:'DM Serif Display',serif;font-size:2.1rem;color:var(--green);line-height:1;}
+.stat-card .sub{font-size:.74rem;color:var(--text-mid);margin-top:2px;}
+.stat-card.green-card{background:var(--green);border-color:var(--green);}
+.stat-card.green-card .lbl{color:rgba(255,255,255,.6);}
+.stat-card.green-card .val{color:#fff;}
+.stat-card.green-card .sub{color:rgba(255,255,255,.7);}
+
+/* ── VIEWS ── */
+.view{display:none;animation:fadeIn .2s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
+.leg-item{display:flex;align-items:center;gap:5px;background:var(--surface);
+  border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;
+  font-size:.73rem;font-weight:600;color:var(--text-mid);}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* ── CALENDAR ── */
+.week-block{margin-bottom:18px;}
+.week-sep{font-size:.68rem;font-weight:800;color:var(--text-soft);
+  text-transform:uppercase;letter-spacing:.1em;padding:0 2px 8px;
+  display:flex;align-items:center;gap:8px;}
+.week-sep::after{content:'';flex:1;height:1.5px;background:var(--border);}
+.week-sep span{font-weight:500;color:var(--text-mid);text-transform:none;letter-spacing:0;}
+.week-days{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+
+.day-card{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:10px 8px;cursor:pointer;transition:transform .12s,background .12s;
+  position:relative;overflow:hidden;
+  -webkit-user-select:none;user-select:none;
+  min-height:96px;display:flex;flex-direction:column;
+}
+.day-card:active{transform:scale(.96);background:var(--surface2);}
+.day-card.today{border-color:var(--green);border-width:2px;}
+.day-card.today::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);}
+.day-card.past{opacity:.55;}
+.day-card.has-data{border-color:var(--mint);}
+.dc-wd{font-size:.6rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;}
+.dc-date{font-family:'DM Serif Display',serif;font-size:1.22rem;color:var(--text);line-height:1;margin:2px 0 6px;}
+.dc-badge{display:inline-flex;align-items:center;gap:4px;border-radius:5px;
+  padding:3px 6px;font-size:.62rem;font-weight:800;margin-bottom:4px;}
+.dc-badge .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.dc-info{font-size:.64rem;color:var(--text-soft);margin-top:auto;}
+.dc-alunos{font-size:.68rem;color:var(--green-light);font-weight:800;margin-top:2px;}
+.a1{background:rgba(45,106,79,.13);color:#2D6A4F;} .a1 .dot{background:#2D6A4F;}
+.a2{background:rgba(29,78,137,.13);color:#1D4E89;} .a2 .dot{background:#1D4E89;}
+.a3{background:rgba(155,35,53,.13);color:#9B2335;} .a3 .dot{background:#9B2335;}
+.a4{background:rgba(181,88,26,.13);color:#B5581A;} .a4 .dot{background:#B5581A;}
+
+/* ── MODAL ── */
+.overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(22,41,32,.55);backdrop-filter:blur(3px);
+  align-items:flex-end;justify-content:center;
+}
+.overlay.open{display:flex;}
+.modal{
+  background:var(--surface);
+  border-radius:24px 24px 0 0;
+  width:100%;max-width:700px;
+  max-height:93dvh;
+  display:flex;flex-direction:column;
+  box-shadow:0 -8px 40px rgba(22,41,32,.22);
+  animation:slideUp .28s cubic-bezier(.32,1,.6,1);
+  overflow:hidden;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-drag{width:40px;height:4px;background:var(--border);border-radius:4px;margin:10px auto 0;flex-shrink:0;}
+.modal-head{padding:14px 18px 12px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+.mtitle{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--green);}
+.msub{font-size:.8rem;color:var(--text-soft);margin-top:1px;}
+.close-btn{width:36px;height:36px;border-radius:50%;border:none;
+  background:var(--surface2);color:var(--text-mid);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;margin-left:10px;}
+.modal-aula-strip{padding:10px 18px;background:var(--surface2);border-bottom:1.5px solid var(--border);flex-shrink:0;}
+.aula-badge-modal{display:inline-flex;align-items:center;gap:7px;border-radius:8px;
+  padding:6px 12px;font-weight:700;font-size:.83rem;}
+.modal-scroll{flex:1;overflow-y:auto;padding:14px 18px;-webkit-overflow-scrolling:touch;}
+.info-box{background:#FFF8F0;border:1.5px solid #F4C99A;border-radius:10px;
+  padding:10px 14px;font-size:.78rem;color:#7A4210;margin-bottom:14px;line-height:1.5;}
+
+.sector-block{margin-bottom:16px;}
+.sector-label{font-size:.63rem;font-weight:800;color:#fff;background:var(--green);
+  text-transform:uppercase;letter-spacing:.09em;padding:5px 10px;
+  border-radius:6px;margin-bottom:8px;display:inline-block;}
+.sala-row{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--surface2);border-radius:10px;border:1.5px solid var(--border);
+  margin-bottom:6px;min-height:52px;transition:border-color .15s,background .15s;}
+.sala-row.filled{border-color:var(--mint);background:#F0FAF4;}
+.sala-num{background:var(--green-pale);color:var(--green);border-radius:5px;padding:3px 8px;
+  font-size:.68rem;font-weight:800;min-width:28px;text-align:center;flex-shrink:0;}
+.sala-name{flex:1;font-weight:500;font-size:.86rem;line-height:1.3;}
+.sala-input{
+  width:70px;height:46px;padding:0 8px;
+  border:2px solid var(--border);border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;
+  text-align:center;color:var(--text);background:var(--surface);
+  transition:border-color .15s;-webkit-appearance:none;appearance:none;
+}
+.sala-input:focus{outline:none;border-color:var(--green-light);background:#F0FAF4;}
+.sala-input.has-val{border-color:var(--green-light);color:var(--green);}
+
+.modal-footer{
+  padding:12px 18px;
+  padding-bottom:calc(14px + var(--safe-bottom));
+  border-top:1.5px solid var(--border);
+  display:flex;gap:10px;flex-shrink:0;background:var(--surface);
+}
+.btn-save{flex:1;background:var(--green);color:#fff;border:none;padding:15px;border-radius:12px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;}
+.btn-save:active{background:var(--green-light);}
+.btn-cancel{background:var(--surface2);color:var(--text-mid);border:none;padding:15px 18px;
+  border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.95rem;}
+
+/* ── REPORT ── */
+.report-weeks{display:flex;flex-direction:column;gap:12px;margin-bottom:22px;}
+.rw{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow);}
+.rw-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.rw-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--green);}
+.rw-badge{background:var(--green-pale);color:var(--green);padding:3px 10px;border-radius:20px;font-size:.77rem;font-weight:700;}
+.rw-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:.83rem;}
+.rw-row:last-child{border-bottom:none;}
+.sec-title{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--green);
+  margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.sec-title::after{content:'';flex:1;height:1.5px;background:var(--border);}
+.sector-report-card{background:var(--surface);border:1.5px solid var(--border);
+  border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;}
+.st-sector-hdr{background:var(--green);color:#fff;padding:9px 14px;
+  font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;}
+.sala-report-row{display:flex;align-items:center;gap:10px;padding:9px 14px;
+  border-bottom:1px solid var(--border);font-size:.83rem;}
+.sala-report-row:last-child{border-bottom:none;}
+.sala-report-row:nth-child(even){background:var(--surface2);}
+.srr-name{flex:1;font-weight:500;}
+.srr-stat{text-align:center;min-width:44px;font-weight:700;color:var(--green);}
+.srr-stat-label{font-size:.64rem;color:var(--text-soft);font-weight:400;display:block;}
+
+/* ── CONFIG ── */
+.config-block{background:var(--surface);border:1.5px solid var(--border);
+  border-radius:14px;padding:18px;box-shadow:var(--shadow);margin-bottom:18px;}
+.config-block h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--green);margin-bottom:14px;}
+.aula-card{border:2px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.aula-n{font-size:.67rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.aula-input-t{width:100%;border:none;border-bottom:1.5px solid var(--border);padding:5px 0;
+  font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);
+  background:transparent;margin-bottom:8px;}
+.aula-input-t:focus{outline:none;border-color:var(--green-light);}
+.aula-input-d{width:100%;border:1.5px solid var(--border);background:var(--surface2);
+  font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--text-mid);
+  resize:none;height:58px;line-height:1.5;border-radius:8px;padding:8px;}
+.aula-input-d:focus{outline:none;border-color:var(--green-light);}
+.ac1{border-color:rgba(45,106,79,.3);} .ac2{border-color:rgba(29,78,137,.3);}
+.ac3{border-color:rgba(155,35,53,.3);} .ac4{border-color:rgba(181,88,26,.3);}
+.big-btn{width:100%;border:none;padding:15px;border-radius:12px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.big-btn.green{background:var(--green);color:#fff;}
+.big-btn.green:active{background:var(--green-light);}
+.big-btn.orange{background:var(--accent);color:#fff;}
+.big-btn.orange:active{background:var(--accent-dark);}
+
+/* ── DRIVE ── */
+.drive-status{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;
+  font-size:.82rem;font-weight:600;margin-bottom:14px;}
+.drive-status.disconnected{background:#FFF0F0;color:#9B2335;}
+.drive-status.connected{background:var(--green-pale);color:var(--green);}
+.drive-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.drive-status.disconnected .drive-dot{background:#9B2335;}
+.drive-status.connected .drive-dot{background:var(--green);box-shadow:0 0 0 3px rgba(45,106,79,.2);}
+.setup-step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.82rem;line-height:1.5;color:var(--text-mid);}
+.setup-step:last-child{border-bottom:none;}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;margin-top:1px;}
+
+/* ── INSTALL BANNER ── */
+#installBanner{
+  display:none;position:fixed;top:calc(58px + var(--safe-top));left:0;right:0;z-index:80;
+  background:var(--green-dark);color:#fff;padding:12px 18px;
+  display:none;align-items:center;gap:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+#installBanner p{flex:1;font-size:.83rem;line-height:1.4;}
+#installBanner p strong{display:block;font-size:.9rem;}
+.install-btn{background:#fff;color:var(--green-dark);border:none;padding:8px 14px;
+  border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.83rem;cursor:pointer;white-space:nowrap;}
+.install-close{background:transparent;border:none;color:rgba(255,255,255,.7);font-size:1.2rem;cursor:pointer;padding:4px;}
+
+
+/* ── SAÚDE ── */
+.saude-field-group{margin-bottom:14px;}
+.saude-label{font-size:.72rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;
+  letter-spacing:.07em;display:block;margin-bottom:5px;}
+.saude-input{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:"DM Sans",sans-serif;font-size:.92rem;color:var(--text);background:var(--surface2);}
+.saude-input:focus{outline:none;border-color:var(--green-light);}
+.saude-input-num{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:"DM Sans",sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);
+  background:var(--surface);text-align:center;-webkit-appearance:none;}
+.saude-input-num:focus{outline:none;border-color:var(--green-light);background:#F0FAF4;}
+.saude-section-title{font-family:"DM Serif Display",serif;font-size:1.05rem;color:var(--green);
+  margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+.saude-section-title::after{content:"";flex:1;height:1.5px;background:var(--border);}
+.saude-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:12px;}
+.saude-card-title{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:10px;}
+.saude-alerta{background:#FEE2E2;border:1.5px solid #FCA5A5;border-radius:8px;
+  padding:8px 12px;font-size:.8rem;color:#9B2335;font-weight:600;margin-top:8px;}
+.saude-alerta.ok{background:var(--green-pale);border-color:var(--mint);color:var(--green);}
+.saude-tag-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--surface);font-family:"DM Sans",sans-serif;font-size:.8rem;
+  font-weight:600;color:var(--text-soft);cursor:pointer;}
+.saude-tag-btn.active{background:var(--green);color:#fff;border-color:var(--green);}
+.saude-imc-display{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:1.1rem;font-weight:700;text-align:center;background:var(--surface2);color:var(--text-mid);}
+.atend-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:10px;box-shadow:var(--shadow);}
+.atend-card.tem-alerta{border-color:#FCA5A5;background:#FFF8F8;}
+.atend-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.atend-nome{font-weight:700;font-size:.95rem;color:var(--text);}
+.atend-setor{font-size:.72rem;color:var(--text-soft);margin-top:1px;}
+.atend-hora{font-size:.72rem;color:var(--text-soft);}
+.atend-medidas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.medida-tag{padding:4px 10px;border-radius:20px;font-size:.74rem;font-weight:700;
+  background:var(--green-pale);color:var(--green);}
+.medida-tag.alerta{background:#FEE2E2;color:#9B2335;}
+.atend-obs{font-size:.78rem;color:var(--text-mid);font-style:italic;margin-top:4px;}
+.atend-del{background:transparent;border:none;color:var(--text-soft);cursor:pointer;
+  font-size:1rem;padding:4px;}
+.mes-comparativo{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:12px;box-shadow:var(--shadow);}
+.mes-comp-title{font-family:"DM Serif Display",serif;font-size:1rem;color:var(--green);margin-bottom:10px;}
+.mes-comp-row{display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid var(--border);font-size:.83rem;}
+.mes-comp-row:last-child{border-bottom:none;}
+.empty-state{text-align:center;padding:30px 20px;color:var(--text-soft);font-size:.88rem;}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:8px;}
+
+/* ── TABLET ── */
+@media(min-width:600px){
+  .stats-row{grid-template-columns:repeat(4,1fr);}
+  .report-weeks{display:grid;grid-template-columns:repeat(2,1fr);}
+  .modal{border-radius:20px;max-width:580px;margin:auto;align-self:center;}
+  .overlay{align-items:center;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+}
+@media(min-width:900px){
+  .report-weeks{grid-template-columns:repeat(3,1fr);}
+  .modal{max-width:640px;}
+}
+</style>
+</head>
+<body>
+
+<!-- INSTALL BANNER (Android) -->
+<div id="installBanner">
+  <p><strong>Instalar como App</strong>Adicione à tela inicial para usar offline</p>
+  <button class="install-btn" id="installBtn">Instalar</button>
+  <button class="install-close" onclick="document.getElementById('installBanner').style.display='none'">✕</button>
+</div>
+
+<!-- HEADER -->
+<div class="top-header">
+  <h1>Ginástica Laboral <small>Tribunal de Contas</small></h1>
+  <div class="month-nav-inline">
+    <button class="m-nav-btn" onclick="changeMonth(-1)">‹</button>
+    <span class="month-label" id="monthLabel">—</span>
+    <button class="m-nav-btn" onclick="changeMonth(1)">›</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card green-card">
+      <div class="lbl">Dias de Aula</div>
+      <div class="val" id="sAulas">0</div>
+      <div class="sub">dias úteis</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">Alunos</div>
+      <div class="val" id="sAlunos">0</div>
+      <div class="sub">registrados</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">Salas</div>
+      <div class="val">57</div>
+      <div class="sub">10 setores</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">Atend.</div>
+      <div class="val" id="sAtend">0</div>
+      <div class="sub">registros</div>
+    </div>
+  </div>
+
+  <!-- CALENDÁRIO -->
+  <div id="view-calendario" class="view active">
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#2D6A4F"></div>Aula 1</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#1D4E89"></div>Aula 2</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#9B2335"></div>Aula 3</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#B5581A"></div>Aula 4</div>
+    </div>
+    <div id="calGrid"></div>
+  </div>
+
+  <!-- RELATÓRIO -->
+  <div id="view-relatorio" class="view">
+    <div class="sec-title">Resumo Semanal</div>
+    <div class="report-weeks" id="reportWeeks"></div>
+    <div class="sec-title">Por Setor</div>
+    <div id="sectorReport"></div>
+  </div>
+
+  <!-- SAÚDE -->
+  <div id="view-saude" class="view">
+    <div class="stats-row" style="margin-bottom:14px;">
+      <div class="stat-card green-card">
+        <div class="lbl">Atend. Hoje</div>
+        <div class="val" id="sSaudeHoje">0</div>
+        <div class="sub">registros</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Este Mês</div>
+        <div class="val" id="sSaudeMes">0</div>
+        <div class="sub">atendimentos</div>
+      </div>
+      <div class="stat-card" id="sAlertaCard">
+        <div class="lbl">Alertas</div>
+        <div class="val" id="sSaudeAlertas" style="color:#9B2335">0</div>
+        <div class="sub">fora do normal</div>
+      </div>
+    </div>
+    <button class="big-btn green" style="margin-bottom:18px;" onclick="openSaudeModal()">➕ Novo Atendimento</button>
+    <div class="sec-title">Atendimentos de Hoje</div>
+    <div id="saudeHojeList"></div>
+    <div class="sec-title" style="margin-top:18px;">Histórico do Mês</div>
+    <div id="saudeRelatorio"></div>
+  </div>
+
+  <!-- CONFIG -->
+  <div id="view-config" class="view">
+    <div class="config-block">
+      <h3>✏️ Suas 4 Aulas</h3>
+      <div class="info-box">Cada semana usa uma aula em rotação (Sem. 1→Aula 1, Sem. 2→Aula 2…). Edite conforme sua programação.</div>
+      <div id="aulasGrid"></div>
+      <button class="big-btn green" onclick="saveAulas()">Salvar Aulas</button>
+    </div>
+    <div class="config-block">
+      <h3>⬇️ Exportar Dados</h3>
+      <p style="font-size:.83rem;color:var(--text-mid);margin-bottom:4px;line-height:1.5;">Exporta as presenças do mês atual em CSV, compatível com Excel e Google Sheets.</p>
+      <button class="big-btn orange" onclick="exportCSV()">📥 Baixar CSV do Mês</button>
+    </div>
+    <div class="config-block">
+      <h3>☁️ Backup no Google Drive</h3>
+      <div id="driveStatus" class="drive-status disconnected">
+        <span class="drive-dot"></span>
+        <span id="driveStatusText">Não conectado</span>
+      </div>
+      <div id="driveDisconnected">
+        <div class="info-box" style="margin-bottom:14px;">
+          🔒 Conecte sua conta Google para salvar backups automáticos semanais no Drive. Seus dados nunca serão perdidos.
+        </div>
+        <div class="info-box" style="background:#EEF4FF;border-color:#B0C4F0;color:#1E3A6E;">
+          ⚙️ <strong>Antes de conectar:</strong> você precisa criar um Client ID gratuito no Google Cloud Console. Toque em "Como configurar" abaixo para ver o passo a passo.
+        </div>
+        <button class="big-btn" style="background:#f1f3f4;color:#3c4043;margin-top:10px;" onclick="toggleSetupGuide()">📋 Como configurar (1 vez só)</button>
+        <div id="setupGuide" style="display:none;margin-top:12px;">
+          <div class="setup-step"><span class="step-num">1</span><div><strong>Acesse</strong> console.cloud.google.com e faça login com sua conta Google</div></div>
+          <div class="setup-step"><span class="step-num">2</span><div><strong>Crie um projeto</strong> → clique em "Novo Projeto" → nome: <em>GL Laboral</em> → Criar</div></div>
+          <div class="setup-step"><span class="step-num">3</span><div><strong>Ative a API</strong> → Menu → APIs e Serviços → Biblioteca → busque <em>Google Drive API</em> → Ativar</div></div>
+          <div class="setup-step"><span class="step-num">4</span><div><strong>Crie credenciais</strong> → APIs e Serviços → Credenciais → Criar credenciais → <em>ID do cliente OAuth</em></div></div>
+          <div class="setup-step"><span class="step-num">5</span><div><strong>Tipo:</strong> Aplicativo da Web → <strong>Origens autorizadas:</strong> cole a URL do seu GitHub Pages (ex: https://usuario.github.io)</div></div>
+          <div class="setup-step"><span class="step-num">6</span><div><strong>Copie o Client ID</strong> gerado (termina em .apps.googleusercontent.com) e cole abaixo</div></div>
+        </div>
+        <div style="margin-top:14px;">
+          <label style="font-size:.78rem;font-weight:700;color:var(--text-mid);display:block;margin-bottom:6px;">SEU CLIENT ID DO GOOGLE</label>
+          <input id="clientIdInput" type="text" placeholder="xxxx.apps.googleusercontent.com"
+            style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;
+            font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--text);background:var(--surface2);"
+            oninput="localStorage.setItem('gl_client_id',this.value)"/>
+        </div>
+        <button class="big-btn green" style="margin-top:10px;" onclick="driveConnect()">🔗 Conectar Google Drive</button>
+      </div>
+      <div id="driveConnected" style="display:none;">
+        <div style="font-size:.85rem;color:var(--text-mid);margin-bottom:14px;line-height:1.6;">
+          <strong id="driveUserName" style="color:var(--text);display:block;margin-bottom:4px;"></strong>
+          Backup automático ativado — salva toda sexta-feira automaticamente.
+        </div>
+        <div id="lastBackupInfo" style="font-size:.78rem;color:var(--text-soft);margin-bottom:14px;"></div>
+        <button class="big-btn green" onclick="driveBackupNow()">☁️ Fazer Backup Agora</button>
+        <button class="big-btn" style="background:var(--surface2);color:var(--text-mid);margin-top:8px;" onclick="driveRestore()">⬇️ Restaurar do Drive</button>
+        <button class="big-btn" style="background:#FFF0F0;color:#9B2335;margin-top:8px;" onclick="driveDisconnect()">Desconectar</button>
+      </div>
+    </div>
+
+    <div class="config-block">
+      <h3>📱 Instalar como App</h3>
+      <p style="font-size:.83rem;color:var(--text-mid);margin-bottom:12px;line-height:1.5;">
+        <strong style="display:block;margin-bottom:4px;color:var(--text)">No iPhone/iPad (Safari):</strong>
+        Toque em <strong>Compartilhar</strong> (caixinha ↑) → <strong>Adicionar à Tela de Início</strong>
+      </p>
+      <p style="font-size:.83rem;color:var(--text-mid);line-height:1.5;">
+        <strong style="display:block;margin-bottom:4px;color:var(--text)">No Android (Chrome):</strong>
+        Toque no menu ⋮ → <strong>Adicionar à tela inicial</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bnav-btn active" id="nav-calendario" onclick="showView('calendario')">
+    <div class="bnav-indicator"></div>
+    <span class="bnav-icon">📅</span>
+    <span class="bnav-label">Calendário</span>
+  </button>
+  <button class="bnav-btn" id="nav-relatorio" onclick="showView('relatorio')">
+    <div class="bnav-indicator"></div>
+    <span class="bnav-icon">📊</span>
+    <span class="bnav-label">Relatório</span>
+  </button>
+  <button class="bnav-btn" id="nav-saude" onclick="showView('saude')">
+    <div class="bnav-indicator"></div>
+    <span class="bnav-icon">🩺</span>
+    <span class="bnav-label">Saúde</span>
+  </button>
+  <button class="bnav-btn" id="nav-config" onclick="showView('config')">
+    <div class="bnav-indicator"></div>
+    <span class="bnav-icon">⚙️</span>
+    <span class="bnav-label">Config</span>
+  </button>
+</nav>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeOverlay(event)">
+  <div class="modal" id="theModal">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <div>
+        <div class="mtitle" id="mTitle">—</div>
+        <div class="msub" id="mSub">—</div>
+      </div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-aula-strip"><div id="mBadge"></div></div>
+    <div class="modal-scroll" id="mScroll">
+      <div class="info-box">Digite o número de alunos nas salas atendidas hoje. Deixe em branco as não atendidas.</div>
+      <div id="mSalas"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveDay()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DADOS ──
+const SETORES=[
+  {nome:'GABINETES',salas:['Naluh Gouveia','Antonio Cristóvão','Valmir Ribeiro','Ronald Polanco','Ouvidoria','Dulcineia Benício','Ribamar Trindade','Antonio Malheiro']},
+  {nome:'GABINETE DA CONSELHEIRA SUBSTITUTA E MEMORIAL',salas:['Gabinete']},
+  {nome:'MINISTÉRIO PÚBLICO',salas:['Chefia de Gabinete 1','Sala de Assessores 1','Sala de Assessores 2','Última Sala']},
+  {nome:'SEAF — SEC. DE ADM. E FINANÇAS',salas:['Secretaria de Adm. e Finanças','Coord. de Gestão de Pessoas','Coord. de Finanças','Coord. de Licitações e Contratos']},
+  {nome:'ESCON — ESCOLA DE CONTAS',salas:['Escola de Contas','Coord. de Comunicação','Controle Interno','Biblioteca de Inovação']},
+  {nome:'SESSÕES',salas:['Central de Atendimento ao Jurisdicionado','Chefia da Secretarias','Secretaria Adjunta (Sessões)','DIC Pro','Div. de Registro, Autuação e Distribuição','Apoio às Sessões','Cumprimento de Decisões']},
+  {nome:'COORDAD',salas:['Secretaria Geral da Presidência','Diretoria de Planejamento e Gestão','DSA','Motoristas','COGEN','ASTCON','Corregedoria + Assessoria de Seg.','Protocolo']},
+  {nome:'PRESIDÊNCIA',salas:['Gabinete da Presidência','Cons. Jurídica','DDI']},
+  {nome:'SECEX — SEC. DE CONTROLE EXTERNO',salas:['1ª COECEX','2ª COECEX','3ª/7ª/8ª COECEX — Pol. Públicas','4ª COECEX','5ª COECEX','6ª COECEX','GAICE','Secretaria de Controle Externo','Apoio à SECEX e Sec. Adjunta']},
+  {nome:'STI — SEC. DE TEC. DA INFORMAÇÃO',salas:['Suporte','Secretaria Adjunta (STI)','Suporte em Atendimentos','Secretaria da STI','INFRA','Segurança da Informação','Desenvolvimento 1','Desenvolvimento 2','Apoio ao Desenvolvimento']}
+];
+
+const SALAS=[];
+SETORES.forEach((s)=>{s.salas.forEach((nome)=>{SALAS.push({nome,setor:s.nome,gi:SALAS.length});});});
+
+const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const WD=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const SK='gl_tce_v5';
+
+let S={
+  month:new Date().getMonth(),year:new Date().getFullYear(),
+  aulas:[
+    {t:'Aula 1 — Coluna',d:'Mobilidade de coluna, alongamento cervical e lombar.'},
+    {t:'Aula 2 — MMSS',d:'Membros superiores: ombros, punhos, cotovelos e mãos.'},
+    {t:'Aula 3 — MMII',d:'Membros inferiores: quadril, joelhos, tornozelos e pés.'},
+    {t:'Aula 4 — Geral',d:'Relaxamento completo e respiração consciente.'}
+  ],
+  data:{}
+};
+
+function load(){try{const p=localStorage.getItem(SK);if(p){const j=JSON.parse(p);if(j.aulas)S.aulas=j.aulas;if(j.data)S.data=j.data;}}catch(e){}}
+function save(){try{localStorage.setItem(SK,JSON.stringify({aulas:S.aulas,data:S.data}));}catch(e){}}
+
+function wdays(y,m){const r=[];const d=new Date(y,m,1);while(d.getMonth()===m){if(d.getDay()>=1&&d.getDay()<=5)r.push(new Date(d));d.setDate(d.getDate()+1);}return r;}
+function dk(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function weekOf(d,wds){const i=wds.findIndex(x=>x.toDateString()===d.toDateString());return i<0?0:Math.floor(i/5);}
+function aulaIdx(wi){return wi%4;}
+function dayAlunos(k){const dd=S.data[k];if(!dd||!dd.salas)return 0;return Object.values(dd.salas).reduce((a,b)=>a+(parseInt(b)||0),0);}
+function monthStats(){const wds=wdays(S.year,S.month);let al=0,at=0;wds.forEach(d=>{const k=dk(d);al+=dayAlunos(k);const dd=S.data[k];if(dd&&dd.salas)at+=Object.keys(dd.salas).length;});return{aulas:wds.length,alunos:al,atend:at};}
+
+// ── CALENDÁRIO ──
+function renderCalendar(){
+  const grid=document.getElementById('calGrid');grid.innerHTML='';
+  const wds=wdays(S.year,S.month);
+  const today=new Date();
+  const weeks=[];for(let i=0;i<wds.length;i+=5)weeks.push(wds.slice(i,i+5));
+  weeks.forEach((week,wi)=>{
+    const ai=aulaIdx(wi);
+    const wb=document.createElement('div');wb.className='week-block';
+    const sep=document.createElement('div');sep.className='week-sep';
+    sep.innerHTML=`SEMANA ${wi+1} <span>${S.aulas[ai].t.split('—')[0].trim()}</span>`;
+    wb.appendChild(sep);
+    const dg=document.createElement('div');dg.className='week-days';
+    week.forEach(d=>{
+      const key=dk(d);const alunos=dayAlunos(key);
+      const isPast=d<new Date(today.getFullYear(),today.getMonth(),today.getDate());
+      const isToday=d.toDateString()===today.toDateString();
+      const hasData=alunos>0;
+      const card=document.createElement('div');
+      card.className=`day-card${isToday?' today':''}${isPast?' past':''}${hasData?' has-data':''}`;
+      card.addEventListener('click',()=>openModal(d,ai,wds));
+      card.innerHTML=`
+        <div class="dc-wd">${WD[d.getDay()]}</div>
+        <div class="dc-date">${d.getDate()}</div>
+        <div class="dc-badge a${ai+1}"><span class="dot"></span>A${ai+1}</div>
+        ${hasData?`<div class="dc-alunos">👥${alunos}</div>`:`<div class="dc-info">tocar</div>`}`;
+      dg.appendChild(card);
+    });
+    wb.appendChild(dg);grid.appendChild(wb);
+  });
+  const st=monthStats();
+  document.getElementById('sAulas').textContent=st.aulas;
+  document.getElementById('sAlunos').textContent=st.alunos;
+  document.getElementById('sAtend').textContent=st.atend;
+  document.getElementById('monthLabel').textContent=`${MONTHS[S.month].slice(0,3)} ${S.year}`;
+}
+
+// ── MODAL ──
+let mKey=null,mWds=null;
+function openModal(d,ai,wds){
+  mKey=dk(d);mWds=wds;
+  document.getElementById('mTitle').textContent=`${WD[d.getDay()]}, ${d.getDate()} de ${MONTHS[d.getMonth()]}`;
+  document.getElementById('mSub').textContent=`Semana ${weekOf(d,wds)+1} · ${S.aulas[ai].t}`;
+  document.getElementById('mBadge').innerHTML=`<div class="aula-badge-modal a${ai+1}">🏃 ${S.aulas[ai].t} — ${S.aulas[ai].d}</div>`;
+  const saved=(S.data[mKey]&&S.data[mKey].salas)||{};
+  const cont=document.getElementById('mSalas');cont.innerHTML='';
+  SETORES.forEach(setor=>{
+    const block=document.createElement('div');block.className='sector-block';
+    const lbl=document.createElement('div');lbl.className='sector-label';lbl.textContent=setor.nome;
+    block.appendChild(lbl);
+    setor.salas.forEach(nome=>{
+      const sala=SALAS.find(x=>x.nome===nome&&x.setor===setor.nome);
+      const val=saved[sala.gi]!==undefined?saved[sala.gi]:'';
+      const row=document.createElement('div');
+      row.className='sala-row'+(val!==''?' filled':'');
+      row.innerHTML=`
+        <span class="sala-num">${String(sala.gi+1).padStart(2,'0')}</span>
+        <span class="sala-name">${nome}</span>
+        <input class="sala-input${val!==''?' has-val':''}" type="number" inputmode="numeric"
+          pattern="[0-9]*" min="0" max="999" placeholder="—" value="${val}" data-gi="${sala.gi}"/>`;
+      const inp=row.querySelector('input');
+      inp.addEventListener('input',()=>{
+        const v=inp.value.trim()!=='';
+        row.classList.toggle('filled',v);inp.classList.toggle('has-val',v);
+      });
+      block.appendChild(row);
+    });
+    cont.appendChild(block);
+  });
+  document.getElementById('mScroll').scrollTop=0;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeOverlay(e){if(e.target.id==='overlay')closeModal();}
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
+function saveDay(){
+  const salas={};
+  document.querySelectorAll('.sala-input').forEach(inp=>{
+    const v=parseInt(inp.value);if(!isNaN(v)&&v>=0)salas[inp.dataset.gi]=v;
+  });
+  S.data[mKey]={salas,saved:true};save();renderCalendar();closeModal();
+}
+
+// ── RELATÓRIO ──
+function renderReport(){
+  const wds=wdays(S.year,S.month);
+  const weeks=[];for(let i=0;i<wds.length;i+=5)weeks.push(wds.slice(i,i+5));
+  const rw=document.getElementById('reportWeeks');rw.innerHTML='';
+  weeks.forEach((week,wi)=>{
+    let tot=0,rows='';
+    week.forEach(d=>{
+      const k=dk(d);const n=dayAlunos(k);tot+=n;const ai=aulaIdx(wi);
+      rows+=`<div class="rw-row">
+        <span style="color:var(--text-mid);font-weight:600">${WD[d.getDay()]} ${d.getDate()}</span>
+        <span style="font-size:.75rem;color:var(--text-soft)">${S.aulas[ai].t.split('—')[0].trim()}</span>
+        <span style="font-weight:700;color:${n>0?'var(--green)':'var(--text-soft)'}">${n>0?n+' 👥':'—'}</span>
+      </div>`;
+    });
+    const c=document.createElement('div');c.className='rw';
+    c.innerHTML=`<div class="rw-hdr"><span class="rw-title">Semana ${wi+1}</span><span class="rw-badge">${tot} alunos</span></div>${rows}`;
+    rw.appendChild(c);
+  });
+  const sr=document.getElementById('sectorReport');sr.innerHTML='';
+  SETORES.forEach(setor=>{
+    const card=document.createElement('div');card.className='sector-report-card';
+    card.innerHTML=`<div class="st-sector-hdr">${setor.nome}</div>`;
+    setor.salas.forEach(nome=>{
+      const sala=SALAS.find(x=>x.nome===nome&&x.setor===setor.nome);
+      let tot=0,dias=0;
+      wds.forEach(d=>{const dd=S.data[dk(d)];if(dd&&dd.salas&&dd.salas[sala.gi]!==undefined){tot+=(parseInt(dd.salas[sala.gi])||0);dias++;}});
+      const row=document.createElement('div');row.className='sala-report-row';
+      row.innerHTML=`
+        <span class="sala-num">${String(sala.gi+1).padStart(2,'0')}</span>
+        <span class="srr-name">${nome}</span>
+        <span class="srr-stat">${dias}<span class="srr-stat-label">dias</span></span>
+        <span class="srr-stat" style="color:${tot>0?'var(--green)':'var(--text-soft)'}">${tot>0?tot:'—'}<span class="srr-stat-label">alunos</span></span>`;
+      card.appendChild(row);
+    });
+    sr.appendChild(card);
+  });
+}
+
+// ── CONFIG ──
+function renderConfig(){
+  const ag=document.getElementById('aulasGrid');ag.innerHTML='';
+  S.aulas.forEach((a,i)=>{
+    const card=document.createElement('div');card.className=`aula-card ac${i+1}`;
+    card.innerHTML=`<div class="aula-n">Aula ${i+1}</div>
+      <input class="aula-input-t" type="text" id="at-${i}" value="${a.t}" placeholder="Título"/>
+      <textarea class="aula-input-d" id="ad-${i}" placeholder="Descrição...">${a.d}</textarea>`;
+    ag.appendChild(card);
+  });
+}
+function saveAulas(){
+  S.aulas.forEach((_,i)=>{
+    S.aulas[i].t=document.getElementById(`at-${i}`).value;
+    S.aulas[i].d=document.getElementById(`ad-${i}`).value;
+  });
+  save();renderCalendar();
+  const btn=document.querySelector('#view-config .big-btn.green');
+  btn.textContent='✅ Salvo!';setTimeout(()=>{btn.textContent='Salvar Aulas';},1800);
+}
+
+// ── VIEWS ──
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById(`view-${v}`).classList.add('active');
+  document.getElementById(`nav-${v}`).classList.add('active');
+  if(v==='relatorio')renderReport();
+  if(v==='config')renderConfig();
+  if(v==='saude')renderSaudeView();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function changeMonth(d){
+  S.month+=d;
+  if(S.month<0){S.month=11;S.year--;}
+  if(S.month>11){S.month=0;S.year++;}
+  renderCalendar();
+}
+
+// ── CSV ──
+function exportCSV(){
+  const wds=wdays(S.year,S.month);
+  let csv='Data,DiaSemana,Semana,Aula,Setor,Sala,Alunos\n';
+  wds.forEach((d,i)=>{
+    const k=dk(d);const wi=Math.floor(i/5);const ai=aulaIdx(wi);const w=wi+1;
+    const dd=S.data[k];
+    if(dd&&dd.salas&&Object.keys(dd.salas).length>0){
+      Object.entries(dd.salas).forEach(([gi,n])=>{
+        const sala=SALAS[gi];
+        csv+=`${k},${WD[d.getDay()]},Semana ${w},"${S.aulas[ai].t}","${sala.setor}","${sala.nome}",${n}\n`;
+      });
+    }else{
+      csv+=`${k},${WD[d.getDay()]},Semana ${w},"${S.aulas[ai].t}","","(sem registro)",0\n`;
+    }
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download=`ginastica_${MONTHS[S.month].toLowerCase()}_${S.year}.csv`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+// ── GOOGLE DRIVE BACKUP ──
+const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+let driveToken=null;
+
+function driveInit(){
+  const saved=localStorage.getItem('gl_drive_token');
+  const expiry=localStorage.getItem('gl_drive_expiry');
+  const clientId=localStorage.getItem('gl_client_id')||'';
+  if(document.getElementById('clientIdInput'))
+    document.getElementById('clientIdInput').value=clientId;
+  if(saved&&expiry&&Date.now()<parseInt(expiry)){
+    driveToken=saved;
+    driveShowConnected();
+  }
+  // Auto backup on Fridays
+  const now=new Date();
+  if(now.getDay()===5&&driveToken){
+    const lastBackup=localStorage.getItem('gl_last_backup');
+    const today=dk(now);
+    if(lastBackup!==today) driveBackupNow(true);
+  }
+}
+
+function driveConnect(){
+  const clientId=(localStorage.getItem('gl_client_id')||'').trim();
+  if(!clientId||!clientId.includes('googleusercontent')){
+    alert('⚠️ Cole seu Client ID do Google antes de conectar.\n\nSiga o passo a passo "Como configurar" acima.');
+    return;
+  }
+  const redirectUri=window.location.origin+window.location.pathname;
+  const url=`https://accounts.google.com/o/oauth2/v2/auth`+
+    `?client_id=${encodeURIComponent(clientId)}`+
+    `&redirect_uri=${encodeURIComponent(redirectUri)}`+
+    `&response_type=token`+
+    `&scope=${encodeURIComponent(DRIVE_SCOPE)}`+
+    `&prompt=consent`;
+  window.location.href=url;
+}
+
+function driveHandleCallback(){
+  const hash=window.location.hash;
+  if(!hash.includes('access_token')) return;
+  const params=new URLSearchParams(hash.replace('#',''));
+  const token=params.get('access_token');
+  const expiresIn=parseInt(params.get('expires_in')||'3600');
+  if(token){
+    driveToken=token;
+    localStorage.setItem('gl_drive_token',token);
+    localStorage.setItem('gl_drive_expiry',String(Date.now()+expiresIn*1000));
+    window.history.replaceState(null,'',window.location.pathname);
+    driveShowConnected();
+    driveBackupNow(true);
+  }
+}
+
+function driveShowConnected(){
+  document.getElementById('driveDisconnected').style.display='none';
+  document.getElementById('driveConnected').style.display='block';
+  const status=document.getElementById('driveStatus');
+  status.className='drive-status connected';
+  document.getElementById('driveStatusText').textContent='Google Drive conectado ✓';
+  // Show last backup
+  const last=localStorage.getItem('gl_last_backup');
+  document.getElementById('lastBackupInfo').textContent=
+    last?`Último backup: ${last}`:'Ainda não foi feito backup hoje.';
+  // Get user info
+  if(driveToken){
+    fetch('https://www.googleapis.com/oauth2/v3/userinfo',{
+      headers:{Authorization:`Bearer ${driveToken}`}
+    }).then(r=>r.json()).then(u=>{
+      if(u.name) document.getElementById('driveUserName').textContent='Conta: '+u.name;
+    }).catch(()=>{});
+  }
+}
+
+function driveDisconnect(){
+  driveToken=null;
+  localStorage.removeItem('gl_drive_token');
+  localStorage.removeItem('gl_drive_expiry');
+  localStorage.removeItem('gl_last_backup');
+  document.getElementById('driveDisconnected').style.display='block';
+  document.getElementById('driveConnected').style.display='none';
+  const status=document.getElementById('driveStatus');
+  status.className='drive-status disconnected';
+  document.getElementById('driveStatusText').textContent='Não conectado';
+}
+
+async function driveBackupNow(silent=false){
+  if(!driveToken){alert('Conecte o Google Drive primeiro.');return;}
+  const btn=document.getElementById('driveConnected')?.querySelector('.big-btn.green');
+  if(btn){btn.textContent='⏳ Salvando...';btn.disabled=true;}
+  try{
+    const backup={version:'gl_tce_v5',exportedAt:new Date().toISOString(),aulas:S.aulas,data:S.data};
+    const content=JSON.stringify(backup,null,2);
+
+    // Try to use stored file ID first
+    let fileId=localStorage.getItem('gl_drive_file_id');
+
+    // If no stored ID, search for existing file
+    if(!fileId){
+      const search=await fetch(
+        `https://www.googleapis.com/drive/v3/files?q=name%3D'GL_Laboral_dados.json'&spaces=drive&fields=files(id,name)`,
+        {headers:{Authorization:`Bearer ${driveToken}`}}
+      );
+      const searchData=await search.json();
+      if(searchData.files&&searchData.files.length>0){
+        fileId=searchData.files[0].id;
+        localStorage.setItem('gl_drive_file_id',fileId);
+      }
+    }
+
+    let response;
+    if(fileId){
+      // Update existing file
+      response=await fetch(
+        `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,
+        {method:'PATCH',headers:{Authorization:`Bearer ${driveToken}`,'Content-Type':'application/json'},body:content}
+      );
+      if(!response.ok) fileId=null; // If update fails, create new
+    }
+
+    if(!fileId){
+      // Create new file
+      const meta=JSON.stringify({name:'GL_Laboral_dados.json',mimeType:'application/json'});
+      const formData=new FormData();
+      formData.append('metadata',new Blob([meta],{type:'application/json'}));
+      formData.append('file',new Blob([content],{type:'application/json'}));
+      response=await fetch(
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+        {method:'POST',headers:{Authorization:`Bearer ${driveToken}`},body:formData}
+      );
+      if(response.ok){
+        const newFile=await response.json();
+        localStorage.setItem('gl_drive_file_id',newFile.id);
+      }
+    }
+
+    if(response.ok){
+      const today=dk(new Date());
+      localStorage.setItem('gl_last_backup',today);
+      if(document.getElementById('lastBackupInfo'))
+        document.getElementById('lastBackupInfo').textContent=`Último backup: ${today}`;
+      if(!silent) alert('✅ Backup salvo no Google Drive!');
+    } else {
+      throw new Error('Falha no upload');
+    }
+  }catch(e){
+    if(!silent) alert('❌ Erro ao salvar backup. Verifique sua conexão.');
+    console.error('Drive backup error:',e);
+  }
+  if(btn){btn.textContent='☁️ Fazer Backup Agora';btn.disabled=false;}
+}
+
+async function driveRestore(){
+  if(!driveToken){alert('Conecte o Google Drive primeiro.');return;}
+  try{
+    let fileId=localStorage.getItem('gl_drive_file_id');
+    if(!fileId){
+      const search=await fetch(
+        `https://www.googleapis.com/drive/v3/files?q=name%3D'GL_Laboral_dados.json'&spaces=drive&orderBy=modifiedTime%20desc&fields=files(id,name,modifiedTime)`,
+        {headers:{Authorization:`Bearer ${driveToken}`}}
+      );
+      const searchData=await search.json();
+      if(!searchData.files||searchData.files.length===0){
+        alert('Nenhum backup encontrado no Drive.');return;
+      }
+      // Use most recent file
+      fileId=searchData.files[0].id;
+      localStorage.setItem('gl_drive_file_id',fileId);
+    }
+    const res=await fetch(
+      `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+      {headers:{Authorization:`Bearer ${driveToken}`}}
+    );
+    const backup=await res.json();
+    if(backup.aulas) S.aulas=backup.aulas;
+    if(backup.data) S.data=backup.data;
+    save();
+    alert('✅ Dados restaurados! O app vai recarregar agora.');
+    location.reload();
+  }catch(e){
+    alert('❌ Erro ao restaurar backup.');
+    console.error('Drive restore error:',e);
+  }
+}
+
+function toggleSetupGuide(){
+  const g=document.getElementById('setupGuide');
+  g.style.display=g.style.display==='none'?'block':'none';
+}
+
+
+// ── SAÚDE ──
+const SK_SAUDE = 'gl_saude_v1';
+let SAUDE = {};
+
+function loadSaude(){
+  try{const p=localStorage.getItem(SK_SAUDE);if(p)SAUDE=JSON.parse(p);}catch(e){}
+}
+function saveSaude_data(){
+  try{localStorage.setItem(SK_SAUDE,JSON.stringify(SAUDE));}catch(e){}
+}
+
+function todayKey(){return dk(new Date());}
+
+function saudeStats(){
+  const hoje = todayKey();
+  const mes = hoje.slice(0,7);
+  const todayRecs = (SAUDE[hoje]||[]);
+  let mesCount = 0, alertas = 0;
+  Object.keys(SAUDE).forEach(d=>{
+    if(d.startsWith(mes)){
+      (SAUDE[d]||[]).forEach(r=>{
+        mesCount++;
+        if(r.alertas && r.alertas.length>0) alertas++;
+      });
+    }
+  });
+  return {hoje: todayRecs.length, mes: mesCount, alertas};
+}
+
+function renderSaudeStats(){
+  const s = saudeStats();
+  document.getElementById('sSaudeHoje').textContent = s.hoje;
+  document.getElementById('sSaudeMes').textContent = s.mes;
+  document.getElementById('sSaudeAlertas').textContent = s.alertas;
+  const ac = document.getElementById('sAlertaCard');
+  if(ac) ac.style.borderColor = s.alertas>0 ? '#FCA5A5' : 'var(--border)';
+}
+
+function renderSaudeHoje(){
+  const hoje = todayKey();
+  const recs = (SAUDE[hoje]||[]).slice().reverse();
+  const cont = document.getElementById('saudeHojeList');
+  if(!recs.length){
+    cont.innerHTML = '<div class="empty-state"><div class="empty-icon">🩺</div>Nenhum atendimento registrado hoje.<br>Toque em "Novo Atendimento" para começar.</div>';
+    return;
+  }
+  cont.innerHTML = recs.map((r,i)=>{
+    const idx = (SAUDE[hoje]||[]).length - 1 - i;
+    const temAlerta = r.alertas && r.alertas.length > 0;
+    const medidas = buildMedidasTags(r);
+    return `<div class="atend-card${temAlerta?' tem-alerta':''}">
+      <div class="atend-header">
+        <div>
+          <div class="atend-nome">${r.nome||'—'}</div>
+          <div class="atend-setor">${r.setor||''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="atend-hora">${r.hora||''}</span>
+          <button class="atend-del" onclick="deleteSaude('${hoje}',${idx})">🗑️</button>
+        </div>
+      </div>
+      <div class="atend-medidas">${medidas}</div>
+      ${r.alertas&&r.alertas.length?`<div class="saude-alerta">⚠️ ${r.alertas.join(' · ')}</div>`:''}
+      ${r.obs?`<div class="atend-obs">"${r.obs}"</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function buildMedidasTags(r){
+  let tags = '';
+  if(r.pressaoS && r.pressaoD){
+    const alerta = isPressaoAlerta(r.pressaoS, r.pressaoD);
+    tags += `<span class="medida-tag${alerta?' alerta':''}">🩸 ${r.pressaoS}/${r.pressaoD}</span>`;
+  }
+  if(r.oxi){
+    const alerta = r.oxi < 95;
+    tags += `<span class="medida-tag${alerta?' alerta':''}">💨 ${r.oxi}%</span>`;
+  }
+  if(r.glico){
+    const alerta = isGlicoAlerta(r.glico, r.glicoEstado);
+    tags += `<span class="medida-tag${alerta?' alerta':''}">🩸 ${r.glico} mg/dL</span>`;
+  }
+  if(r.bioPeso){
+    tags += `<span class="medida-tag">⚖️ ${r.bioPeso}kg`;
+    if(r.bioIMC) tags += ` · IMC ${r.bioIMC}`;
+    tags += `</span>`;
+  }
+  return tags || '<span style="color:var(--text-soft);font-size:.8rem;">Sem medições</span>';
+}
+
+function renderSaudeRelatorio(){
+  const mes = todayKey().slice(0,7);
+  const cont = document.getElementById('saudeRelatorio');
+  
+  // Count by day
+  const diasDoMes = Object.keys(SAUDE).filter(d=>d.startsWith(mes)).sort().reverse();
+  if(!diasDoMes.length){
+    cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div>Nenhum dado registrado este mês.</div>';
+    return;
+  }
+
+  // Monthly summary
+  let totalMes=0, totalAlertas=0, pressaoVals=[], oxiVals=[], glicoVals=[];
+  diasDoMes.forEach(d=>{
+    (SAUDE[d]||[]).forEach(r=>{
+      totalMes++;
+      if(r.alertas&&r.alertas.length) totalAlertas++;
+      if(r.pressaoS) pressaoVals.push(r.pressaoS);
+      if(r.oxi) oxiVals.push(r.oxi);
+      if(r.glico) glicoVals.push(r.glico);
+    });
+  });
+
+  const avg = arr => arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : '—';
+
+  let html = `<div class="mes-comparativo">
+    <div class="mes-comp-title">📊 Resumo de ${MONTHS[parseInt(mes.slice(5))-1]}</div>
+    <div class="mes-comp-row"><span>Total de atendimentos</span><strong>${totalMes}</strong></div>
+    <div class="mes-comp-row"><span>Alertas registrados</span><strong style="color:${totalAlertas>0?'#9B2335':'var(--green)'}">${totalAlertas}</strong></div>
+    ${pressaoVals.length?`<div class="mes-comp-row"><span>Pressão média (sistólica)</span><strong>${avg(pressaoVals)} mmHg</strong></div>`:''}
+    ${oxiVals.length?`<div class="mes-comp-row"><span>Oximetria média</span><strong>${avg(oxiVals)}%</strong></div>`:''}
+    ${glicoVals.length?`<div class="mes-comp-row"><span>Glicemia média</span><strong>${avg(glicoVals)} mg/dL</strong></div>`:''}
+  </div>`;
+
+  // Per day
+  diasDoMes.forEach(d=>{
+    const recs = SAUDE[d]||[];
+    const alertasDia = recs.filter(r=>r.alertas&&r.alertas.length).length;
+    const dt = new Date(d+'T12:00:00');
+    html += `<div class="atend-card" style="margin-bottom:8px;">
+      <div class="atend-header">
+        <div><div class="atend-nome">${WD[dt.getDay()]}, ${dt.getDate()} de ${MONTHS[dt.getMonth()]}</div></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="medida-tag">${recs.length} atend.</span>
+          ${alertasDia>0?`<span class="medida-tag alerta">⚠️ ${alertasDia}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  cont.innerHTML = html;
+}
+
+function renderSaudeView(){
+  renderSaudeStats();
+  renderSaudeHoje();
+  renderSaudeRelatorio();
+}
+
+// ── MODAL SAÚDE ──
+let editingSaudeIdx = null;
+
+function openSaudeModal(){
+  editingSaudeIdx = null;
+  document.getElementById('sMTitle').textContent = 'Novo Atendimento';
+  document.getElementById('sMSub').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  // Clear fields
+  ['sNome','sOxi','sGlico','sBioPeso','sBioAltura','sBioGordura','sObs','sPressaoS','sPressaoD'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('sSetor').value='';
+  document.getElementById('sGlicoEstado').value='jejum';
+  document.getElementById('sBioIMC').textContent='—';
+  document.querySelectorAll('.saude-tag-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  ['alertaPressao','alertaOxi','alertaGlico','alertaBio'].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.style.display='none';}
+  });
+  document.getElementById('overlaySaude').classList.add('open');
+  document.body.style.overflow='hidden';
+
+  // Live IMC calc
+  ['sBioPeso','sBioAltura'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', calcIMC);
+  });
+  // Live alerts
+  ['sPressaoS','sPressaoD'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', checkPressaoLive);
+  });
+  document.getElementById('sOxi').addEventListener('input', checkOxiLive);
+  document.getElementById('sGlico').addEventListener('input', checkGlicoLive);
+}
+
+function closeSaudeModal(){
+  document.getElementById('overlaySaude').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function setGlicoEstado(estado, btn){
+  document.getElementById('sGlicoEstado').value = estado;
+  document.querySelectorAll('.saude-tag-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkGlicoLive();
+}
+
+function calcIMC(){
+  const p = parseFloat(document.getElementById('sBioPeso').value);
+  const h = parseFloat(document.getElementById('sBioAltura').value);
+  if(p && h && h > 0){
+    const hm = h/100;
+    const imc = (p/(hm*hm)).toFixed(1);
+    const el = document.getElementById('sBioIMC');
+    el.textContent = imc;
+    let label='', color='var(--green)';
+    if(imc<18.5){label='Abaixo';color='#1D4E89';}
+    else if(imc<25){label='Normal';color='var(--green)';}
+    else if(imc<30){label='Sobrepeso';color='#D97706';}
+    else{label='Obesidade';color='#9B2335';}
+    el.style.color = color;
+    el.textContent = `${imc} (${label})`;
+    const al = document.getElementById('alertaBio');
+    if(imc>=30){al.style.display='block';al.textContent=`⚠️ IMC ${imc} — Obesidade. Orientar acompanhamento médico.`;al.className='saude-alerta';}
+    else if(imc>=25){al.style.display='block';al.textContent=`⚠️ IMC ${imc} — Sobrepeso.`;al.className='saude-alerta';}
+    else{al.style.display='none';}
+  } else {
+    document.getElementById('sBioIMC').textContent='—';
+  }
+}
+
+function isPressaoAlerta(s,d){return s>=140||s<90||d>=90||d<60;}
+function isGlicoAlerta(g,estado){
+  if(estado==='jejum') return g>99||g<70;
+  return g>139||g<70;
+}
+
+function checkPressaoLive(){
+  const s=parseInt(document.getElementById('sPressaoS').value);
+  const d=parseInt(document.getElementById('sPressaoD').value);
+  const al=document.getElementById('alertaPressao');
+  if(!s||!d){al.style.display='none';return;}
+  if(s>=180||d>=120){al.style.display='block';al.className='saude-alerta';al.textContent='🚨 Crise hipertensiva! Encaminhar emergência imediatamente.';}
+  else if(s>=140||d>=90){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Pressão alta. Orientar avaliação médica.';}
+  else if(s<90||d<60){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Pressão baixa. Monitorar sintomas.';}
+  else{al.style.display='block';al.className='saude-alerta ok';al.textContent='✓ Pressão normal.';}
+}
+
+function checkOxiLive(){
+  const v=parseInt(document.getElementById('sOxi').value);
+  const al=document.getElementById('alertaOxi');
+  if(!v){al.style.display='none';return;}
+  if(v<90){al.style.display='block';al.className='saude-alerta';al.textContent='🚨 SpO2 crítica! Encaminhar emergência.';}
+  else if(v<95){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Saturação baixa. Orientar avaliação médica.';}
+  else{al.style.display='block';al.className='saude-alerta ok';al.textContent='✓ Oximetria normal.';}
+}
+
+function checkGlicoLive(){
+  const v=parseInt(document.getElementById('sGlico').value);
+  const estado=document.getElementById('sGlicoEstado').value;
+  const al=document.getElementById('alertaGlico');
+  if(!v){al.style.display='none';return;}
+  if(v<70){al.style.display='block';al.className='saude-alerta';al.textContent='🚨 Hipoglicemia! Agir imediatamente — oferecer açúcar.';}
+  else if(estado==='jejum'&&v>125){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Glicemia em jejum elevada. Orientar avaliação médica.';}
+  else if(estado==='pos'&&v>200){al.style.display='block';al.className='saude-alerta';al.textContent='⚠️ Glicemia pós-refeição elevada. Orientar avaliação médica.';}
+  else{al.style.display='block';al.className='saude-alerta ok';al.textContent='✓ Glicemia normal.';}
+}
+
+function saveSaude(){
+  const nome = document.getElementById('sNome').value.trim();
+  if(!nome){alert('⚠️ Informe o nome do servidor.');return;}
+
+  const alertas = [];
+  const pressaoS = parseInt(document.getElementById('sPressaoS').value)||null;
+  const pressaoD = parseInt(document.getElementById('sPressaoD').value)||null;
+  const oxi = parseInt(document.getElementById('sOxi').value)||null;
+  const glico = parseInt(document.getElementById('sGlico').value)||null;
+  const glicoEstado = document.getElementById('sGlicoEstado').value;
+  const bioPeso = parseFloat(document.getElementById('sBioPeso').value)||null;
+  const bioAltura = parseFloat(document.getElementById('sBioAltura').value)||null;
+  const bioGordura = parseFloat(document.getElementById('sBioGordura').value)||null;
+  const bioIMCEl = document.getElementById('sBioIMC').textContent;
+  const bioIMC = bioIMCEl !== '—' ? bioIMCEl.split(' ')[0] : null;
+  const obs = document.getElementById('sObs').value.trim();
+
+  if(pressaoS && pressaoD && isPressaoAlerta(pressaoS, pressaoD))
+    alertas.push(`Pressão ${pressaoS}/${pressaoD}`);
+  if(oxi && oxi < 95) alertas.push(`SpO2 ${oxi}%`);
+  if(glico && isGlicoAlerta(glico, glicoEstado)) alertas.push(`Glicemia ${glico} mg/dL`);
+  if(bioIMC && parseFloat(bioIMC) >= 25) alertas.push(`IMC ${bioIMC}`);
+
+  const now = new Date();
+  const hora = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const registro = {
+    nome, setor: document.getElementById('sSetor').value,
+    pressaoS, pressaoD, oxi, glico, glicoEstado,
+    bioPeso, bioAltura, bioGordura, bioIMC, obs,
+    alertas, hora
+  };
+
+  const hoje = todayKey();
+  if(!SAUDE[hoje]) SAUDE[hoje] = [];
+  SAUDE[hoje].push(registro);
+  saveSaude_data();
+  closeSaudeModal();
+  renderSaudeView();
+}
+
+function deleteSaude(dia, idx){
+  if(!confirm('Remover este atendimento?')) return;
+  SAUDE[dia].splice(idx, 1);
+  if(!SAUDE[dia].length) delete SAUDE[dia];
+  saveSaude_data();
+  renderSaudeView();
+}
+
+
+// ── PWA: SERVICE WORKER ──
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .then(()=>console.log('SW registrado ✓'))
+      .catch(e=>console.log('SW erro:',e));
+  });
+}
+
+// ── PWA: INSTALL PROMPT (Android/Chrome) ──
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('installBanner').style.display='flex';
+});
+document.getElementById('installBtn').addEventListener('click',async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  const{outcome}=await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  document.getElementById('installBanner').style.display='none';
+});
+
+// ── INIT ──
+load();
+loadSaude();
+renderCalendar();
+driveHandleCallback();
+driveInit();
+</script>
+
+<!-- MODAL SAÚDE -->
+<div class="overlay" id="overlaySaude" onclick="if(event.target.id==='overlaySaude')closeSaudeModal()">
+  <div class="modal" id="modalSaude">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <div>
+        <div class="mtitle" id="sMTitle">Novo Atendimento</div>
+        <div class="msub" id="sMSub"></div>
+      </div>
+      <button class="close-btn" onclick="closeSaudeModal()">✕</button>
+    </div>
+    <div class="modal-scroll" style="padding:16px 18px;">
+
+      <!-- Nome e Setor -->
+      <div class="saude-field-group">
+        <label class="saude-label">Nome do Servidor</label>
+        <input id="sNome" type="text" class="saude-input" placeholder="Nome completo"/>
+      </div>
+      <div class="saude-field-group">
+        <label class="saude-label">Setor</label>
+        <select id="sSetor" class="saude-input">
+          <option value="">Selecione o setor...</option>
+          <option>GABINETES</option>
+          <option>GABINETE DA CONSELHEIRA SUBSTITUTA E MEMORIAL</option>
+          <option>MINISTÉRIO PÚBLICO</option>
+          <option>SEAF — SEC. DE ADM. E FINANÇAS</option>
+          <option>ESCON — ESCOLA DE CONTAS</option>
+          <option>SESSÕES</option>
+          <option>COORDAD</option>
+          <option>PRESIDÊNCIA</option>
+          <option>SECEX — SEC. DE CONTROLE EXTERNO</option>
+          <option>STI — SEC. DE TEC. DA INFORMAÇÃO</option>
+        </select>
+      </div>
+
+      <!-- Serviços -->
+      <div class="saude-section-title">Medições Realizadas</div>
+      <div class="info-box" style="margin-bottom:12px;">Preencha apenas os serviços realizados. Deixe em branco os que não foram feitos.</div>
+
+      <!-- Pressão -->
+      <div class="saude-card" id="cardPressao">
+        <div class="saude-card-title">🩸 Pressão Arterial</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div style="flex:1;">
+            <label class="saude-label">Sistólica (mmHg)</label>
+            <input id="sPressaoS" type="number" inputmode="numeric" class="saude-input-num" placeholder="120" min="60" max="250"/>
+          </div>
+          <div style="font-size:1.4rem;color:var(--text-soft);padding-top:18px;">/</div>
+          <div style="flex:1;">
+            <label class="saude-label">Diastólica (mmHg)</label>
+            <input id="sPressaoD" type="number" inputmode="numeric" class="saude-input-num" placeholder="80" min="40" max="150"/>
+          </div>
+        </div>
+        <div id="alertaPressao" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Oximetria -->
+      <div class="saude-card" id="cardOxi">
+        <div class="saude-card-title">💨 Oximetria (SpO2)</div>
+        <label class="saude-label">Saturação (%)</label>
+        <input id="sOxi" type="number" inputmode="numeric" class="saude-input-num" placeholder="98" min="50" max="100"/>
+        <div id="alertaOxi" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Glicemia -->
+      <div class="saude-card" id="cardGlico">
+        <div class="saude-card-title">🩸 Glicosímetro</div>
+        <label class="saude-label">Glicemia (mg/dL)</label>
+        <input id="sGlico" type="number" inputmode="numeric" class="saude-input-num" placeholder="90" min="20" max="600"/>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="saude-tag-btn active" onclick="setGlicoEstado('jejum',this)">Jejum</button>
+          <button class="saude-tag-btn" onclick="setGlicoEstado('pos',this)">Pós-refeição</button>
+        </div>
+        <input type="hidden" id="sGlicoEstado" value="jejum"/>
+        <div id="alertaGlico" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Bioimpedância -->
+      <div class="saude-card" id="cardBio">
+        <div class="saude-card-title">⚖️ Bioimpedância</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label class="saude-label">Peso (kg)</label>
+            <input id="sBioPeso" type="number" inputmode="decimal" class="saude-input-num" placeholder="70.0" step="0.1"/>
+          </div>
+          <div>
+            <label class="saude-label">Altura (cm)</label>
+            <input id="sBioAltura" type="number" inputmode="numeric" class="saude-input-num" placeholder="170"/>
+          </div>
+          <div>
+            <label class="saude-label">Gordura (%)</label>
+            <input id="sBioGordura" type="number" inputmode="decimal" class="saude-input-num" placeholder="20.0" step="0.1"/>
+          </div>
+          <div>
+            <label class="saude-label">IMC (auto)</label>
+            <div id="sBioIMC" class="saude-imc-display">—</div>
+          </div>
+        </div>
+        <div id="alertaBio" class="saude-alerta" style="display:none;"></div>
+      </div>
+
+      <!-- Observações -->
+      <div class="saude-field-group">
+        <label class="saude-label">Observações</label>
+        <textarea id="sObs" class="saude-input" rows="2" placeholder="Observações adicionais..."></textarea>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeSaudeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveSaude()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
