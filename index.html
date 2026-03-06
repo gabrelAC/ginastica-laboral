@@ -791,12 +791,13 @@ function driveInit(){
     driveToken=saved;
     driveShowConnected();
   }
-  // Auto backup on Fridays
+  // Auto backup on Fridays — only if local data exists
   const now=new Date();
   if(now.getDay()===5&&driveToken){
     const lastBackup=localStorage.getItem('gl_last_backup');
     const today=dk(now);
-    if(lastBackup!==today) driveBackupNow(true);
+    const temDados=S.data&&Object.keys(S.data).length>0;
+    if(lastBackup!==today&&temDados) driveBackupNow(true);
   }
 }
 
@@ -933,20 +934,18 @@ async function driveBackupNow(silent=false){
 async function driveRestore(){
   if(!driveToken){alert('Conecte o Google Drive primeiro.');return;}
   try{
-    let fileId=localStorage.getItem('gl_drive_file_id');
-    if(!fileId){
-      const search=await fetch(
-        `https://www.googleapis.com/drive/v3/files?q=name%3D'GL_Laboral_dados.json'&spaces=drive&orderBy=modifiedTime%20desc&fields=files(id,name,modifiedTime)`,
-        {headers:{Authorization:`Bearer ${driveToken}`}}
-      );
-      const searchData=await search.json();
-      if(!searchData.files||searchData.files.length===0){
-        alert('Nenhum backup encontrado no Drive.');return;
-      }
-      // Use most recent file
-      fileId=searchData.files[0].id;
-      localStorage.setItem('gl_drive_file_id',fileId);
+    // Always search by name to get most recent file
+    const search=await fetch(
+      `https://www.googleapis.com/drive/v3/files?q=name%3D'GL_Laboral_dados.json'&spaces=drive&orderBy=modifiedTime%20desc&fields=files(id,name,modifiedTime)`,
+      {headers:{Authorization:`Bearer ${driveToken}`}}
+    );
+    const searchData=await search.json();
+    console.log('Drive search result:', JSON.stringify(searchData));
+    if(!searchData.files||searchData.files.length===0){
+      alert('Nenhum backup encontrado no Drive. Certifique que fez backup pelo computador primeiro.');return;
     }
+    const fileId=searchData.files[0].id;
+    localStorage.setItem('gl_drive_file_id',fileId);
     const res=await fetch(
       `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
       {headers:{Authorization:`Bearer ${driveToken}`}}
