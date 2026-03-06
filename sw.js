@@ -1,4 +1,4 @@
-const CACHE = 'gl-tce-v2';
+const CACHE = 'gl-tce-v5';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -32,4 +32,3 @@ self.addEventListener('fetch', e => {
     })
   );
 });
-
