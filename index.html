@@ -951,11 +951,18 @@ async function driveRestore(){
       `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
       {headers:{Authorization:`Bearer ${driveToken}`}}
     );
-    const backup=await res.json();
+    const text=await res.text();
+    console.log('Drive raw:', text.slice(0,200));
+    const backup=JSON.parse(text);
+    console.log('Backup data keys:', Object.keys(backup.data||{}));
+    if(!backup.data||Object.keys(backup.data).length===0){
+      alert('⚠️ O arquivo no Drive está vazio ou sem registros. Faça um backup pelo computador primeiro.');
+      return;
+    }
     if(backup.aulas) S.aulas=backup.aulas;
     if(backup.data) S.data=backup.data;
     save();
-    alert('✅ Dados restaurados! O app vai recarregar agora.');
+    alert('✅ Dados restaurados! ' + Object.keys(backup.data).length + ' dias encontrados. O app vai recarregar agora.');
     location.reload();
   }catch(e){
     alert('❌ Erro ao restaurar backup.');
