@@ -790,6 +790,11 @@ function driveInit(){
   if(saved&&expiry&&Date.now()<parseInt(expiry)){
     driveToken=saved;
     driveShowConnected();
+    // Auto restore if connected but no local data
+    const temDados=S.data&&Object.keys(S.data).length>0;
+    if(!temDados){
+      setTimeout(()=>driveRestore(),1000);
+    }
   }
   // Auto backup on Fridays — only if local data exists
   const now=new Date();
@@ -829,7 +834,11 @@ function driveHandleCallback(){
     localStorage.setItem('gl_drive_expiry',String(Date.now()+expiresIn*1000));
     window.history.replaceState(null,'',window.location.pathname);
     driveShowConnected();
-    driveBackupNow(true);
+    // If no local data, restore from Drive instead of overwriting
+    const temDados=S.data&&Object.keys(S.data).length>0;
+    if(!temDados){
+      setTimeout(()=>driveRestore(),500);
+    }
   }
 }
 
@@ -870,7 +879,7 @@ async function driveBackupNow(silent=false){
   const btn=document.getElementById('driveConnected')?.querySelector('.big-btn.green');
   if(btn){btn.textContent='⏳ Salvando...';btn.disabled=true;}
   try{
-    const backup={version:'gl_tce_v5',exportedAt:new Date().toISOString(),aulas:S.aulas,data:S.data};
+    const backup={version:'gl_tce_v5',exportedAt:new Date().toISOString(),aulas:S.aulas,data:S.data,saude:SAUDE};
     const content=JSON.stringify(backup,null,2);
 
     // Try to use stored file ID first
@@ -960,7 +969,9 @@ async function driveRestore(){
     }
     if(backup.aulas) S.aulas=backup.aulas;
     if(backup.data) S.data=backup.data;
+    if(backup.saude) SAUDE=backup.saude;
     save();
+    saveSaude_data();
     alert('✅ Dados restaurados! ' + Object.keys(backup.data).length + ' dias encontrados. O app vai recarregar agora.');
     location.reload();
   }catch(e){
