@@ -969,10 +969,14 @@ async function driveRestore(){
     }
     if(backup.aulas) S.aulas=backup.aulas;
     if(backup.data) S.data=backup.data;
-    if(backup.saude) SAUDE=backup.saude;
+    if(backup.saude){ SAUDE=backup.saude; saveSaude_data(); }
     save();
-    saveSaude_data();
-    alert('✅ Dados restaurados! ' + Object.keys(backup.data).length + ' dias encontrados. O app vai recarregar agora.');
+    const dias=Object.keys(backup.data||{}).length;
+    const atendSaude=Object.keys(backup.saude||{}).length;
+    alert('✅ Dados restaurados!
+📅 Ginástica: '+dias+' dias
+🩺 Saúde: '+atendSaude+' dias
+O app vai recarregar agora.');
     location.reload();
   }catch(e){
     alert('❌ Erro ao restaurar backup.');
