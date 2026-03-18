@@ -1,4 +1,4 @@
-const CACHE = 'gl-tce-v5';
+const CACHE = 'gl-tce-v20';
 const ASSETS = [
   './index.html',
   './manifest.json',
