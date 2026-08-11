@@ -20,6 +20,19 @@
  --border:#D0E8D8;--text:#162920;--text-mid:#3D5C48;--text-soft:#7FA68A;
  --shadow:0 2px 10px rgba(45,106,79,.09);--shadow-lg:0 8px 28px rgba(45,106,79,.16);
  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--nav-h:68px;
+ --warn-bg:#FFF8F0;--warn-border:#F4C99A;--warn-text:#7A4210;
+ --danger-bg:#FEE2E2;--danger-border:#FCA5A5;--danger-text:#9B2335;
+ --info-bg:#EBF2FB;--info-border:#B0C4F0;--info-text:#1E3A6E;
+}
+:root[data-theme="dark"]{
+ --green:#40916C;--green-light:#52B788;--green-pale:#1B4332;--green-dark:#95D5B2;
+ --mint:#52B788;--accent:#F4A261;--accent-dark:#e8893a;
+ --bg:#10160F ;--surface:#1A2620;--surface2:#212F27;
+ --border:#2E4038;--text:#E8F0EA;--text-mid:#B8C9BE;--text-soft:#82A48F;
+ --shadow:0 2px 10px rgba(0,0,0,.4);--shadow-lg:0 8px 28px rgba(0,0,0,.5);
+ --warn-bg:#3A2E1A;--warn-border:#6B5228;--warn-text:#F4C99A;
+ --danger-bg:#3A1E1E;--danger-border:#6B2E2E;--danger-text:#FF8F8F;
+ --info-bg:#16233A;--info-border:#2E4A78;--info-text:#9BC0F5;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow-x:hidden;}
@@ -107,8 +120,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
 .modal-aula-strip{padding:10px 18px;background:var(--surface2);border-bottom:1.5px solid var(--border);flex-shrink:0;}
 .aula-badge-modal{display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:6px 12px;font-weight:700;font-size:.83rem;}
 .modal-scroll{flex:1;overflow-y:auto;padding:14px 18px;-webkit-overflow-scrolling:touch;}
-.info-box{background:#FFF8F0;border:1.5px solid #F4C99A;border-radius:10px;
- padding:10px 14px;font-size:.78rem;color:#7A4210;margin-bottom:14px;line-height:1.5;}
+.info-box{background:var(--warn-bg);border:1.5px solid var(--warn-border);border-radius:10px;
+ padding:10px 14px;font-size:.78rem;color:var(--warn-text);margin-bottom:14px;line-height:1.5;}
 .sector-block{margin-bottom:16px;}
 .sector-label{font-size:.63rem;font-weight:800;color:#fff;background:var(--green);
  text-transform:uppercase;letter-spacing:.09em;padding:5px 10px;border-radius:6px;
@@ -169,14 +182,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
 .big-btn.green{background:var(--green);color:#fff;}
 .big-btn.green:active{background:var(--green-light);}
-.big-btn.red{background:#FFF0F0;color:#9B2335;}
+.big-btn.red{background:var(--danger-bg);color:var(--danger-text);}
 .big-btn.gray{background:var(--surface2);color:var(--text-mid);}
 /* DRIVE */
 .drive-status{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-size:.82rem;font-weight:600;margin-bottom:14px;}
-.drive-status.disconnected{background:#FFF0F0;color:#9B2335;}
+.drive-status.disconnected{background:var(--danger-bg);color:var(--danger-text);}
 .drive-status.connected{background:var(--green-pale);color:var(--green);}
 .drive-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.drive-status.disconnected .drive-dot{background:#9B2335;}
+.drive-status.disconnected .drive-dot{background:var(--danger-text);}
 .drive-status.connected .drive-dot{background:var(--green);box-shadow:0 0 0 3px rgba(45,106,79,.2);}
 .setup-step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.82rem;line-height:1.5;color:var(--text-mid);}
 .setup-step:last-child{border-bottom:none;}
@@ -203,7 +216,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
 .saude-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
 .saude-card-title{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:10px;}
 .saude-alerta{border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:600;margin-top:8px;}
-.saude-alerta.bad{background:#FEE2E2;border:1.5px solid #FCA5A5;color:#9B2335;}
+.saude-alerta.bad{background:var(--danger-bg);border:1.5px solid var(--danger-border);color:var(--danger-text);}
 .saude-alerta.ok{background:var(--green-pale);border:1.5px solid var(--mint);color:var(--green);}
 .saude-tag-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);
  background:var(--surface);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--text-soft);cursor:pointer;}
@@ -212,21 +225,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
  font-size:1rem;font-weight:700;text-align:center;background:var(--surface2);color:var(--text-mid);}
 .atend-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
  padding:14px;margin-bottom:10px;box-shadow:var(--shadow);}
-.atend-card.tem-alerta{border-color:#FCA5A5;background:#FFF8F8;}
+.atend-card.tem-alerta{border-color:var(--danger-border);background:var(--danger-bg);}
 .atend-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
 .atend-nome{font-weight:700;font-size:.95rem;color:var(--text);}
 .atend-setor{font-size:.72rem;color:var(--text-soft);margin-top:1px;}
 .atend-hora{font-size:.72rem;color:var(--text-soft);}
 .atend-medidas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
 .medida-tag{padding:4px 10px;border-radius:20px;font-size:.74rem;font-weight:700;background:var(--green-pale);color:var(--green);}
-.medida-tag.alerta{background:#FEE2E2;color:#9B2335;}
+.medida-tag.alerta{background:var(--danger-bg);color:var(--danger-text);}
 .atend-obs{font-size:.78rem;color:var(--text-mid);font-style:italic;margin-top:4px;}
 .atend-actions{display:flex;gap:6px;margin-top:10px;}
 .atend-btn{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--border);
  background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;
  color:var(--text-mid);cursor:pointer;}
-.atend-btn.del{background:#FFF0F0;border-color:#FCA5A5;color:#9B2335;}
-.comparativo-box{background:#EBF2FB;border:1.5px solid #B0C4F0;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:.78rem;color:#1E3A6E;}
+.atend-btn.del{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger-text);}
+.comparativo-box{background:var(--info-bg);border:1.5px solid var(--info-border);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:.78rem;color:var(--info-text);}
 .comp-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #C8D8F0;}
 .comp-row:last-child{border-bottom:none;}
 .comp-up{color:#2D6A4F;font-weight:700;}
@@ -253,7 +266,7 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
 .ficha-info{font-size:.75rem;color:var(--text-soft);margin-top:3px;}
 .ficha-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;
  font-size:.7rem;font-weight:700;margin-right:6px;margin-top:4px;}
-.ficha-badge.alerta{background:#FEE2E2;color:#9B2335;}
+.ficha-badge.alerta{background:var(--danger-bg);color:var(--danger-text);}
 .ficha-badge.ok{background:var(--green-pale);color:var(--green);}
 .grafico-container{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;
  padding:14px;margin-bottom:14px;overflow-x:auto;}
@@ -322,6 +335,12 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
  <div id="view-relatorio" class="view">
  <div class="sec-title">Resumo Semanal</div>
  <div class="report-weeks" id="reportWeeks"></div>
+ <div class="sec-title"> Evolução Mensal</div>
+ <div id="evolucaoMensal" style="margin-bottom:22px;"></div>
+ <div class="sec-title"> Por Responsável</div>
+ <div class="report-weeks" id="responsavelReport"></div>
+ <div class="sec-title"> Salas Sem Atendimento</div>
+ <div id="salasAlertaReport" style="margin-bottom:22px;"></div>
  <div class="sec-title">Por Setor</div>
  <div id="sectorReport"></div>
  </div>
@@ -344,14 +363,19 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
  <div id="saudeHojeList"></div>
  <div class="sec-title" style="margin-top:18px;">Histórico do Mês</div>
  <div id="saudeRelatorio"></div>
+ <div id="reavaliacaoList"></div>
  </div>
 
 
  <!-- FICHAS -->
  <div id="view-ficha" class="view">
  <div style="display:flex;gap:10px;margin-bottom:16px;">
- <input id="fichaSearch" type="text" class="saude-input" placeholder=" Buscar servidor..." 
+ <input id="fichaSearch" type="text" class="saude-input" placeholder=" Buscar servidor..."
  oninput="renderFichaList()" style="flex:1;margin:0;"/>
+ </div>
+ <div style="display:flex;gap:10px;margin-bottom:16px;">
+ <button class="big-btn gray" style="margin-top:0;flex:1;" onclick="exportFichasCSV()"> Exportar Todas (CSV)</button>
+ <button class="big-btn gray" style="margin-top:0;flex:1;" onclick="exportFichasPDFTodas()"> Relatório Geral (PDF)</button>
  </div>
  <div id="fichaList"></div>
  <div id="fichaDetalhe" style="display:none;">
@@ -376,7 +400,7 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
  </div>
  <div id="driveDisconnected">
  <div class="info-box" style="margin-bottom:14px;"> Conecte sua conta Google para backups automáticos semanais.</div>
- <div class="info-box" style="background:#EEF4FF;border-color:#B0C4F0;color:#1E3A6E;"><strong>Antes de conectar:</strong> crie um Client ID no Google Cloud Console.</div>
+ <div class="info-box" style="background:var(--info-bg);border-color:var(--info-border);color:var(--info-text);"><strong>Antes de conectar:</strong> crie um Client ID no Google Cloud Console.</div>
  <button class="big-btn gray" style="margin-top:10px;" onclick="toggleSetupGuide()"> Como configurar</button>
  <div id="setupGuide" style="display:none;margin-top:12px;">
  <div class="setup-step"><span class="step-num">1</span><div>Acesse <strong>console.cloud.google.com</strong></div></div>
@@ -408,6 +432,9 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
  <h3> Exportar Dados</h3>
  <button class="big-btn green" onclick="exportCSV()"> Baixar CSV do Mês</button>
  <button class="big-btn green" style="margin-top:8px;" onclick="gerarPDF()"> Gerar Relatório PDF</button>
+ <button class="big-btn gray" style="margin-top:8px;" onclick="exportBackupLocal()"> Baixar Backup Local (JSON)</button>
+ <button class="big-btn gray" style="margin-top:8px;" onclick="document.getElementById('importBackupInput').click()"> Restaurar de Arquivo Local</button>
+ <input type="file" id="importBackupInput" accept="application/json" style="display:none;" onchange="importBackupLocal(this)"/>
  </div>
 
  <div class="config-block">
@@ -425,6 +452,17 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
  <input type="time" id="lembreteHora" value="17:00" class="saude-input" 
  onchange="salvarLembrete()" style="margin-bottom:8px;"/>
  <div id="lembreteStatus" style="font-size:.78rem;color:var(--text-soft);margin-top:6px;"></div>
+ </div>
+ </div>
+
+ <div class="config-block">
+ <h3> Aparência</h3>
+ <div style="display:flex;align-items:center;justify-content:space-between;">
+ <span style="font-weight:600;font-size:.9rem;">Modo escuro</span>
+ <label class="toggle-switch">
+ <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode(this.checked)"/>
+ <span class="toggle-slider"></span>
+ </label>
  </div>
  </div>
 
@@ -481,6 +519,10 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
  </div>
  <div class="modal-aula-strip"><div id="mBadge"></div></div>
  <div class="modal-scroll" id="mScroll">
+ <div class="saude-field-group">
+ <label class="saude-label">Responsável pela Aula</label>
+ <input id="mResponsavel" type="text" class="saude-input" placeholder="Nome do instrutor/responsável"/>
+ </div>
  <div class="info-box">Digite o número de alunos nas salas atendidas. Deixe em branco as não atendidas.</div>
  <div id="mSalas"></div>
  </div>
@@ -601,6 +643,20 @@ let S={month:new Date().getMonth(),year:new Date().getFullYear(),
  ],data:{}};
 let SAUDE={};
 
+function applyTheme(){
+ const dark=localStorage.getItem('gl_dark_mode')==='true';
+ document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+}
+function toggleDarkMode(ativo){
+ document.documentElement.setAttribute('data-theme',ativo?'dark':'light');
+ localStorage.setItem('gl_dark_mode',String(ativo));
+}
+function syncDarkToggle(){
+ const t=document.getElementById('darkModeToggle');
+ if(t)t.checked=localStorage.getItem('gl_dark_mode')==='true';
+}
+applyTheme();
+
 function load(){try{const p=localStorage.getItem(SK);if(p){const j=JSON.parse(p);if(j.aulas)S.aulas=j.aulas;if(j.data)S.data=j.data;}}catch(e){}}
 function save(){try{localStorage.setItem(SK,JSON.stringify({aulas:S.aulas,data:S.data}));}catch(e){}}
 function migrateData(){
@@ -674,6 +730,8 @@ function openModal(d,ai,wds){
  const ms=document.getElementById('mSub');if(ms)ms.textContent=`Semana ${Math.floor(wds.findIndex(x=>x.toDateString()===d.toDateString())/5)+1} · ${S.aulas[ai].t}`;
  const mb=document.getElementById('mBadge');if(mb)mb.innerHTML=`<div class="aula-badge-modal a${ai+1}"> ${S.aulas[ai].t} — ${S.aulas[ai].d}</div>`;
  const saved=(S.data[mKey]&&S.data[mKey].salas)||{};
+ const respInput=document.getElementById('mResponsavel');
+ if(respInput)respInput.value=(S.data[mKey]&&S.data[mKey].responsavel)||localStorage.getItem('gl_last_responsavel')||'';
  const cont=document.getElementById('mSalas');if(!cont)return;cont.innerHTML='';
  SETORES.forEach(setor=>{
  const block=document.createElement('div');block.className='sector-block';
@@ -702,7 +760,10 @@ function closeModal(){const ov=document.getElementById('overlay');if(ov)ov.class
 function saveDay(){
  const salas={};
  document.querySelectorAll('.sala-input').forEach(inp=>{const v=parseInt(inp.value);if(!isNaN(v)&&v>=0)salas[inp.dataset.gi]=v;});
- S.data[mKey]={salas,saved:true};save();renderCalendar();closeModal();
+ const responsavel=(document.getElementById('mResponsavel')?.value||'').trim();
+ S.data[mKey]={salas,saved:true,responsavel};
+ if(responsavel)localStorage.setItem('gl_last_responsavel',responsavel);
+ save();renderCalendar();closeModal();
 }
 
 function renderReport(){
@@ -737,6 +798,85 @@ function renderReport(){
  });
  sr.appendChild(card);
  });
+ renderEvolucaoMensal();
+ renderResponsavelReport();
+ renderSalasAlerta();
+}
+
+function monthlyAlunosHistory(numMeses=6){
+ const totals={};
+ Object.keys(S.data).forEach(k=>{
+ const dd=S.data[k];if(!dd||!dd.salas)return;
+ const mes=k.slice(0,7);
+ const n=Object.values(dd.salas).reduce((a,b)=>a+(parseInt(b)||0),0);
+ totals[mes]=(totals[mes]||0)+n;
+ });
+ const meses=Object.keys(totals).sort().slice(-numMeses);
+ return meses.map(m=>({mes:m,total:totals[m]}));
+}
+function renderEvolucaoMensal(){
+ const cont=document.getElementById('evolucaoMensal');if(!cont)return;
+ const hist=monthlyAlunosHistory(6);
+ if(hist.length<2){cont.innerHTML='<div class="empty-state" style="padding:16px;">Ainda não há histórico suficiente (mín. 2 meses com registros).</div>';return;}
+ const max=Math.max(...hist.map(h=>h.total))*1.15||100;
+ const bars=hist.map(h=>{
+ const pct=Math.round((h.total/max)*70);
+ const [y,m]=h.mes.split('-');
+ return`<div class="grafico-bar-wrap">
+ <div class="grafico-val">${h.total}</div>
+ <div class="grafico-bar" style="height:${pct}px;max-height:70px;min-height:4px;"></div>
+ <div class="grafico-label">${MONTHS[parseInt(m)-1].slice(0,3)}/${y.slice(2)}</div>
+ </div>`;
+ }).join('');
+ cont.innerHTML=`<div class="grafico-container"><div class="grafico-title">Alunos atendidos por mês</div><div class="grafico-bars">${bars}</div></div>`;
+}
+
+function renderResponsavelReport(){
+ const wds=wdays(S.year,S.month);
+ const totals={};
+ wds.forEach(d=>{
+ const k=dk(d);const dd=S.data[k];
+ if(!dd||!dd.salas||!Object.keys(dd.salas).length)return;
+ const resp=(dd.responsavel&&dd.responsavel.trim())||'Não informado';
+ if(!totals[resp])totals[resp]={dias:0,alunos:0};
+ totals[resp].dias++;totals[resp].alunos+=dayAlunos(k);
+ });
+ const cont=document.getElementById('responsavelReport');if(!cont)return;cont.innerHTML='';
+ const entries=Object.entries(totals).sort((a,b)=>b[1].alunos-a[1].alunos);
+ if(!entries.length){cont.innerHTML='<div class="empty-state" style="padding:16px;">Nenhum responsável registrado neste mês.</div>';return;}
+ entries.forEach(([nome,t])=>{
+ const c=document.createElement('div');c.className='rw';
+ c.innerHTML=`<div class="rw-hdr"><span class="rw-title">${nome}</span><span class="rw-badge">${t.alunos} alunos</span></div>
+ <div class="rw-row"><span style="color:var(--text-mid);font-weight:600">Dias com aula registrada</span><span style="font-weight:700;">${t.dias}</span></div>`;
+ cont.appendChild(c);
+ });
+}
+
+function salasSemAtendimento(limiteSemanas=3){
+ const hoje=new Date();
+ const alertas=[];
+ const datasOrdenadas=Object.keys(S.data).sort();
+ SALAS.forEach(sala=>{
+ let ultimaData=null;
+ datasOrdenadas.forEach(k=>{
+ const dd=S.data[k];
+ if(dd&&dd.salas&&dd.salas[sala.gi]!==undefined&&(parseInt(dd.salas[sala.gi])||0)>0)ultimaData=k;
+ });
+ let semanas;
+ if(!ultimaData){semanas=null;}
+ else{const dt=new Date(ultimaData+'T12:00:00');semanas=Math.floor((hoje-dt)/(7*24*60*60*1000));}
+ if(semanas===null||semanas>=limiteSemanas)alertas.push({sala:sala.nome,setor:sala.setor,semanas});
+ });
+ return alertas.sort((a,b)=>(b.semanas??999)-(a.semanas??999));
+}
+function renderSalasAlerta(){
+ const cont=document.getElementById('salasAlertaReport');if(!cont)return;
+ const alertas=salasSemAtendimento(3);
+ if(!alertas.length){cont.innerHTML='<div class="empty-state" style="padding:16px;"><div class="empty-icon"></div>Todas as salas em dia (últimas 3 semanas).</div>';return;}
+ cont.innerHTML=`<div class="sector-report-card"><div class="st-sector-hdr" style="background:var(--danger-text);">${alertas.length} sala(s) sem atendimento recente</div>
+ ${alertas.map(a=>`<div class="sala-report-row"><span class="srr-name">${a.sala}<div style="font-size:.68rem;color:var(--text-soft);">${a.setor}</div></span>
+ <span class="srr-stat" style="color:var(--danger-text);">${a.semanas===null?'nunca':a.semanas}<span class="srr-stat-label">${a.semanas===null?'':'semanas'}</span></span></div>`).join('')}
+ </div>`;
 }
 
 function renderConfig(){
@@ -765,7 +905,7 @@ function showView(v){
  const gymStats=document.querySelector('.app > .stats-row');
  if(gymStats)gymStats.style.display=(v==='saude'||v==='ficha')?'none':'grid';
  if(v==='relatorio')renderReport();
- if(v==='config'){renderConfig();initLembrete();}
+ if(v==='config'){renderConfig();initLembrete();syncDarkToggle();}
  if(v==='saude')renderSaudeView();
  if(v==='ficha')renderFichaList();
  window.scrollTo({top:0,behavior:'smooth'});
@@ -776,6 +916,32 @@ function changeMonth(d){
  // Re-render saude if on saude tab
  const saudeView=document.getElementById('view-saude');
  if(saudeView&&saudeView.classList.contains('active'))renderSaudeView();
+}
+
+function exportBackupLocal(){
+ const backup={version:SK,exportedAt:new Date().toISOString(),aulas:S.aulas,data:S.data,saude:SAUDE};
+ const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download=`GL_Laboral_backup_${todayKey()}.json`;a.click();URL.revokeObjectURL(url);
+}
+function importBackupLocal(input){
+ const file=input.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=e=>{
+ try{
+ const backup=JSON.parse(e.target.result);
+ if(!backup||typeof backup!=='object'||(!backup.data&&!backup.saude)){alert(' Arquivo inválido ou vazio.');return;}
+ if(!confirm(' Restaurar dados deste arquivo?\nIsso vai substituir os dados atuais do app.'))return;
+ if(backup.aulas)S.aulas=backup.aulas;
+ if(backup.data)S.data=backup.data;
+ if(backup.saude){SAUDE=backup.saude;saveSaude_data();}
+ save();
+ alert(' Dados restaurados do arquivo local!');
+ location.reload();
+ }catch(err){alert(' Não foi possível ler este arquivo.');console.error(err);}
+ };
+ reader.readAsText(file);
+ input.value='';
 }
 
 function exportCSV(){
@@ -810,6 +976,31 @@ function renderSaudeView(){
  const ac=document.getElementById('sAlertaCard');if(ac)ac.style.borderColor=s.alertas>0?'#FCA5A5':'var(--border)';
  renderSaudeHoje();
  renderSaudeRelatorio();
+ renderReavaliacoes();
+}
+
+function servidoresParaReavaliacao(limiteDias=60){
+ const servidores=getAllServidores();
+ const hoje=new Date();
+ return servidores.map(s=>{
+ const ultimo=s.atendimentos[s.atendimentos.length-1];
+ const dt=new Date(ultimo.dia+'T12:00:00');
+ const diasSemAtend=Math.floor((hoje-dt)/(24*60*60*1000));
+ return{...s,diasSemAtend};
+ }).filter(s=>s.diasSemAtend>=limiteDias).sort((a,b)=>b.diasSemAtend-a.diasSemAtend);
+}
+function irParaFicha(nome){showView('ficha');setTimeout(()=>openFichaDetalhe(nome),50);}
+function renderReavaliacoes(){
+ const cont=document.getElementById('reavaliacaoList');if(!cont)return;
+ const pendentes=servidoresParaReavaliacao(60);
+ if(!pendentes.length){cont.innerHTML='';return;}
+ cont.innerHTML=`<div class="sec-title" style="margin-top:18px;"> Reavaliação Pendente (60+ dias sem atendimento)</div>`+
+ pendentes.map(s=>`<div class="ficha-card" onclick="irParaFicha('${s.nome.replace(/'/g,"\\'")}')">
+ <div style="display:flex;justify-content:space-between;align-items:center;">
+ <div><div class="ficha-nome">${s.nome}</div><div class="ficha-info">${s.setor}</div></div>
+ <span class="ficha-badge alerta">${s.diasSemAtend} dias</span>
+ </div>
+ </div>`).join('');
 }
 
 function buildMedidasTags(r){
@@ -1139,7 +1330,9 @@ function confirmBackup(){
  driveBackupNow(false);
 }
 function confirmRestore(){
- if(!confirm(' Restaurar dados do Google Drive?\nIsso vai substituir os dados atuais do app pelos dados do backup.'))return;
+ if(!confirm(' Restaurar dados do Google Drive?\nIsso vai substituir os dados atuais do app pelos dados do backup.\n\nUm backup de segurança dos dados atuais será baixado antes, por precaução.'))return;
+ const temDados=S.data&&Object.keys(S.data).length>0;
+ if(temDados)exportBackupLocal();
  driveRestore(false);
 }
 function confirmDisconnect(){
@@ -1227,6 +1420,54 @@ function getAllServidores(){
  });
  });
  return Object.values(map).sort((a,b)=>a.nome.localeCompare(b.nome));
+}
+
+function exportFichasCSV(){
+ const servidores=getAllServidores();
+ if(!servidores.length){alert('Nenhum servidor registrado ainda.');return;}
+ let csv='Nome,Setor,TotalAtendimentos,Alertas,PrimeiroAtendimento,UltimoAtendimento\n';
+ servidores.forEach(s=>{
+ const primeiro=s.atendimentos[0]?.dia||'';
+ const ultimo=s.atendimentos[s.atendimentos.length-1]?.dia||'';
+ csv+=`"${s.nome}","${s.setor}",${s.atendimentos.length},${s.alertasTotal},${primeiro},${ultimo}\n`;
+ });
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download=`fichas_servidores_${todayKey()}.csv`;a.click();URL.revokeObjectURL(url);
+}
+
+function exportFichasPDFTodas(){
+ const servidores=getAllServidores();
+ if(!servidores.length){alert('Nenhum servidor registrado ainda.');return;}
+ const rows=servidores.map(s=>{
+ const primeiro=s.atendimentos[0]?.dia||'—';
+ const ultimo=s.atendimentos[s.atendimentos.length-1]?.dia||'—';
+ return`<tr class="${s.alertasTotal>0?'alerta-row':''}">
+ <td>${s.nome}</td><td style="font-size:.75rem;">${s.setor}</td>
+ <td>${s.atendimentos.length}</td>
+ <td>${s.alertasTotal>0?`<span class="alerta-tag">${s.alertasTotal}</span>`:'<span class="ok-tag">0</span>'}</td>
+ <td>${primeiro}</td><td>${ultimo}</td>
+ </tr>`;
+ }).join('');
+ const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+ <style>
+ body{font-family:Arial,sans-serif;color:#162920;padding:30px;max-width:900px;margin:0 auto;}
+ h1{color:#2D6A4F;font-size:1.6rem;margin-bottom:4px;}
+ table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:16px;}
+ th{background:#2D6A4F;color:#fff;padding:8px 10px;text-align:left;font-size:.78rem;}
+ td{padding:7px 10px;border-bottom:1px solid #D0E8D8;}
+ tr:nth-child(even){background:#F4F7F5;}
+ .alerta-row{background:#FFF0F0!important;}
+ .alerta-tag{background:#FEE2E2;color:#9B2335;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;}
+ .ok-tag{background:#D8F3DC;color:#2D6A4F;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;}
+ @media print{button{display:none!important;}}
+ </style></head><body>
+ <h1>Relatório Geral de Fichas — Ginástica Laboral</h1>
+ <div style="color:#7FA68A;font-size:.85rem;">TCE-AC · Gerado em ${new Date().toLocaleDateString('pt-BR')} · ${servidores.length} servidor(es)</div>
+ <table><tr><th>Nome</th><th>Setor</th><th>Atend.</th><th>Alertas</th><th>1° Atend.</th><th>Último</th></tr>${rows}</table>
+ <br><button onclick="window.print()" style="background:#2D6A4F;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:1rem;cursor:pointer;"> Imprimir / Salvar PDF</button>
+ </body></html>`;
+ abrirJanela(html);
 }
 
 function renderFichaList(){
