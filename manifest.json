@@ -1,7 +1,7 @@
 {
-  "name": "Ginástica Laboral — TCE",
-  "short_name": "GL Laboral",
-  "description": "Controle de aulas de ginástica laboral do Tribunal de Contas",
+  "name": "Portal da Saúde do Servidor — TCE",
+  "short_name": "Saúde Servidor",
+  "description": "Portal de saúde do servidor e ginástica laboral do Tribunal de Contas",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#2D6A4F",
